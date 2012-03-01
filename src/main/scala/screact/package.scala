@@ -1,0 +1,27 @@
+import scutil.Functions._
+
+import scutil.Functions._
+
+package object screact {
+	type Scheduled	= Thunk[Option[Node]]
+	// /** execute all set and emit calls within code after it within a single update cycle */
+	// def batch(code: =>Unit) { Engine batch code }
+	// /** execute some code after other changes have been made */
+	// def schedule(code: =>Unit) { Engine schedule new TaskScheduled(task(code)) }
+	
+	def static[T](value:T):Signal[T]				= new StaticSignal(value)
+	def signal[T](value: =>T):Signal[T]				= new CalculationSignal(value)
+	def cell[T](value:T):Cell[T]					= new Cell[T] {
+		val	signal	= new SourceSignal[T](value)
+		def set(it:T) { signal set it }
+	}
+	
+	def never[T]:Events[T]							= new NeverEvents
+	def once[T](value:T):Events[T]					= new OnceEvents(value)
+	def always[T](value:T):Events[T]				= new AlwaysEvents(value)
+	def events[T](value: =>Option[T]):Events[T]		= new CalculationEvents(value)
+	def emitter[T]:Emitter[T]						= new Emitter[T] {
+		val events	= new SourceEvents[T]
+		def emit(it:T) { events emit it }
+	}
+}
