@@ -1,7 +1,8 @@
-package screact
+package screact.extra
 
 import scutil.Implicits._
 
+/** a simple semaphore */
 final class Blocker {
 	private var state	= 0
 	
@@ -9,16 +10,6 @@ final class Blocker {
 		state	+= 1
 		val out	= block
 		state	-= 1
-		out
-	}
-	
-	def exclusiveCycle[T](block: =>T):T	= {
-		state	+= 1
-		val out	= block
-		Engine schedule {
-			state	-= 1
-			None
-		}
 		out
 	}
 	

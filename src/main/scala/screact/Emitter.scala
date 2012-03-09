@@ -7,6 +7,7 @@ object Emitter {
 	implicit def asEvents[T](it:Emitter[T]):Events[T]	= it.events
 }
 
+/** An Emitter is a source for Events and can trigger an update cycle in the Engine */
 trait Emitter[T] extends Disposable { outer =>
 	val events:Events[T]
 	def emit(value:T):Unit

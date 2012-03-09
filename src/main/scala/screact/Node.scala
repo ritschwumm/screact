@@ -2,10 +2,7 @@ package screact
 
 import screact.Updates._
 
-/** 
-base trait for all nodes in a dependency graph.
-direct children are either Reactive or Target. 
-*/
+/** base trait for all nodes in a dependency graph. direct children are either Reactive or Target. */
 private[screact] trait Node {
 	val origin	= Engine.clientCall
 	
@@ -17,5 +14,5 @@ private[screact] trait Node {
 	private[screact] def addDependent(node:Node):Unit
 	private[screact] def removeDependent(node:Node):Unit
 	
-	private[screact] var id	= NodeSet.register(this)
+	private[screact] var id	= NodeSet register this
 }

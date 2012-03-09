@@ -7,21 +7,24 @@ import scutil.gui.SwingUtil._
 
 import screact._
 
+/** used to connect Swing widgets to the reactive world */ 
 object Widget {
+	/** simply emit events from some Connectable */
 	def events[T](connect:Effect[T]=>Disposable):Events[T]	= {
 		val	out			= new SourceEvents[T]
 		val disposable	= connect(out.emit)
 		out
 	}
 	
+	/** signal values by some getter, changing on events from some Connectable */
 	def signal[T,X](connect:Effect[X]=>Disposable, getter:Thunk[T]):Signal[T]	=
 			events(connect) tag getter() hold getter()
 	
 	/** 
-		gui components in signal transformer style:
-		the signal determines the state of the component,
-		events are fired on user interaction but never on
-		signal changes.
+	gui components in signal transformer style:
+	the signal determines the state of the component,
+	events are fired on user interaction but never on
+	signal changes.
 	*/
 	def transformer[T,X](input:Signal[T], connect:Effect[X]=>Disposable, getter:Thunk[T], setter:Effect[T])(implicit ob:Observing):Events[T]	= {
 		val blocker	= new Blocker

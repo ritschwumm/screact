@@ -4,10 +4,6 @@ import scutil.Functions._
 
 package object screact {
 	type Scheduled	= Thunk[Option[Node]]
-	// /** execute all set and emit calls within code after it within a single update cycle */
-	// def batch(code: =>Unit) { Engine batch code }
-	// /** execute some code after other changes have been made */
-	// def schedule(code: =>Unit) { Engine schedule new TaskScheduled(task(code)) }
 	
 	def static[T](value:T):Signal[T]				= new StaticSignal(value)
 	def signal[T](value: =>T):Signal[T]				= new CalculationSignal(value)

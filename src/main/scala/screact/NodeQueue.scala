@@ -2,7 +2,8 @@ package screact
 
 import scala.collection.mutable
 
-final class SimplePrioQueue extends PrioQueue {
+/** a simple FIFO queue for Nodes */
+private final class NodeQueue {
 	private val items	= mutable.ArrayBuffer.empty[Node]
 	
 	def insert(item:Node) { 
@@ -28,5 +29,6 @@ final class SimplePrioQueue extends PrioQueue {
 		out
 	}
 	
-	def isEmpty:Boolean	= items.isEmpty
+	def isEmpty:Boolean		= items.isEmpty
+	def nonEmpty:Boolean	= !isEmpty
 }

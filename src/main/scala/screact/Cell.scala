@@ -8,6 +8,7 @@ object Cell {
 	implicit def asSignal[T](it:Cell[T]):Signal[T]	= it.signal
 }
 
+/** An Emitter is a source for a Signal and can trigger an update cycle in the Engine */
 trait Cell[T] extends Disposable { outer =>
 	val signal:Signal[T]
 	def set(value:T):Unit
@@ -22,7 +23,6 @@ trait Cell[T] extends Disposable { outer =>
 		override def dispose()	{ signal.dispose() }
 	}
 	
-	// TODO test
 	final def view[U](lens:Lens[T,U]):Cell[U]	= new Cell[U] {
 		val signal		= outer.signal map lens.get
 		def set(it:U) 	{ outer modify (lens put (_, it)) }

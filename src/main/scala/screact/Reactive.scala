@@ -7,24 +7,24 @@ import scutil.Disposable
 
 import screact.Updates._
 
-/** base trait for reactive values with some current value (may be Unit) and emitting change messages */
+/** base trait for reactive values with some current value (may be Unit) and emitting events. */
 trait Reactive[+Cur,+Msg] extends Node with Disposable { 
 	private[screact] final var rank:Int	= 0
 	private[screact] def cur:Cur
 	private[screact] def msg:Option[Msg]
 	
 	private var disposed	= false
-	// private val deps	= new JclWeakSet[Node]
-	private val deps	= new NodeSet
 	
-	// TODO why does keeping strong refs to sources here against lost connections?
+	// TODO why does keeping strong refs to sources here help against lost connections?
+	// Nodes thi Reactive reads from
 	private var sources	= mutable.ArrayBuffer[Node]()
 	
+	// Nodes readin data from this Reactive
+	private val deps		= new NodeSet
 	private[screact] final def dependents:Iterable[Node]	= deps.all
 	private[screact] final def addDependent(node:Node) 		{ deps add		node }
 	private[screact] final def removeDependent(node:Node)	{ deps remove	node }
 	
-	// returns either Some dependencies in need of an update in case of a success or None on a rank mismatch
 	private[screact] final def update():Update = {
 		if (disposed)	return Unchanged
 		
@@ -64,21 +64,16 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable {
 			sources += source
 		}
 			
-		try {
-			Engine.pushReader(readCallback)
-			calculate()	// sets rank and sources via readCallback
-			sources foreach { _ addDependent this }  
-			
-			// TODO re-enable
-			// Engine debugEdge (source, this)
-			true
-		}
-		catch { 
-			case RankMismatch	=>
-				false
-		}
-		finally {
-			Engine.popReader()
+		Engine.withReader(readCallback) {
+			try {
+				calculate()	// sets rank and sources via readCallback
+				sources foreach { _ addDependent this }  
+				true
+			}
+			catch { 
+				case RankMismatch	=>
+					false
+			}
 		}
 	}
 	

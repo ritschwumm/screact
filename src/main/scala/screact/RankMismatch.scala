@@ -1,3 +1,4 @@
 package screact
 
-private[screact] object RankMismatch extends Exception
+/** signals the Engine the current Node graph has become inconsistent */
+private object RankMismatch extends Exception

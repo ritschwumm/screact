@@ -3,6 +3,7 @@ package screact.debug
 import scutil.Implicits._
 import scutil.log.Logging
 
+/** simple, indenting debug utility */
 final class PrintDebug {
 	val indent	= "  "
 	var prefix	= ""

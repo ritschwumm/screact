@@ -1,6 +1,7 @@
 package screact
 
-private[screact] object Updates {
+/** enum used to signal what happened with a Node in an internal update cycle */
+private object Updates {
 	sealed trait Update
 	case object Rerank		extends Update
 	case object Unchanged	extends Update

@@ -5,7 +5,7 @@ import java.lang.ref.WeakReference
 import scala.collection.mutable
 
 /** saves weak references by only keeping one per node */
-object NodeSet {
+private object NodeSet {
 	val	nodes	= new mutable.HashMap[Long,WeakReference[Node]]	// TODO maybe use a LongMap instead
 	
 	var	id	= 0L
@@ -22,7 +22,9 @@ object NodeSet {
 	}
 	
 	def gc() {
-		val	obsoleteKeys:Iterable[Long]	= nodes collect { case (id,ref) if ref.get == null => id }
+		val	obsoleteKeys:Iterable[Long]	= nodes collect {
+			case (id,ref) if ref.get == null => id 
+		}
 		nodes	--= obsoleteKeys
 	}
 	
@@ -40,7 +42,7 @@ object NodeSet {
 	}
 }
 
-final class NodeSet {
+private final class NodeSet {
 	val ids	= new mutable.HashSet[Long]
 	
 	def add(node:Node) {
@@ -52,5 +54,5 @@ final class NodeSet {
 	def clear() {
 		ids.clear()
 	}
-	def all:Set[Node]	= ids flatMap { NodeSet.lookup } toSet;
+	def all:Set[Node]	= ids flatMap NodeSet.lookup toSet;
 }

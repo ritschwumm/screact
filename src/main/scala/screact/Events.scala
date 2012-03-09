@@ -5,7 +5,7 @@ import scutil.Functions._
 
 // AKA Publisher
 
-/** a reactive without a (useful) current value just emitting events */
+/** a Reactive without a (useful) current value just emitting events */
 trait Events[+T] extends Reactive[Unit,T] { 
 	private[screact] val cur:Unit	= ()
 	
@@ -40,7 +40,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def filterMap[U](func:T=>Option[U]):Events[U] =
 			this map func collect { case Some(value) => value }
 		
-	// final def filterMap[U](implicit witness:T=>Option[U]):Events[U] =
+	// final def filterMap[U](implicit ev:T=>Option[U]):Events[U] =
 	// 		this map witness collect { case Some(value) => value }
 		
 	// functor
@@ -55,8 +55,8 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def flatMap[U](func:T=>Events[U]):Events[U] =
 			this map func hold never flattenEvents;
 		
-	final def flatten[U](implicit witness:T=>Events[U]):Events[U]	= 
-			this flatMap witness
+	final def flatten[U](implicit ev:T=>Events[U]):Events[U]	= 
+			this flatMap ev
 		
 	// foldable
 	
@@ -80,7 +80,6 @@ trait Events[+T] extends Reactive[Unit,T] {
 		case _ =>
 			events {
 				// NOTE needs to access both message methods or registration fails!
-				// TODO look for other cases where this may happen
 				val thisMessage	= this.message
 				val thatMessage	= that.message
 				thisMessage orElse thatMessage 
@@ -89,11 +88,10 @@ trait Events[+T] extends Reactive[Unit,T] {
 	
 	// snapshotting
 	
-	// TODO fails if that accesses other reactives. really? and if so, why?
 	final def tag[U](that: =>U):Events[U]	=
 			this map { _ => that }
 		
-	final def tag2[U](that: =>U):Events[(T,U)]	=
+	final def tagWith[U](that: =>U):Events[(T,U)]	=
 			this map { (_, that) }
 		
 	final def snapshot[U](that:Signal[U]):Events[U]	= events {
@@ -102,7 +100,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 		when map { _ => what }
 	}    
 	
-	final def snapshot2[U](that:Signal[U]):Events[(T,U)]	= events {
+	final def snapshotWith[U](that:Signal[U]):Events[(T,U)]	= events {
 		val when	= this.message
 		val what	= that.current
 		when map { (_, what) }
@@ -121,16 +119,10 @@ trait Events[+T] extends Reactive[Unit,T] {
 	
 	/** emits an event if both inputs fire at the same instant */
 	final def zip[U](that:Events[U]):Events[(T,U)] = events {
-		/*
 		(this.message, that.message) match {
-			case (Some(here),Some(there))	=> Some((here, there))
-			case _							=> None
+			case (Some(thisMessage),Some(thatMessage))	=> Some((thisMessage, thatMessage))
+			case _										=> None
 		}
-		*/
-		val thisMessage	= this.message
-		val thatMessage	= that.message
-		if (thisMessage.isDefined && thatMessage.isDefined)	Some((thisMessage.get, thatMessage.get)) 
-		else												None
 	}
 	
 	final def sum[U](that:Events[U]):Events[Either[T,U]]	= 

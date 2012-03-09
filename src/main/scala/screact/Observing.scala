@@ -5,15 +5,21 @@ import scala.collection.mutable
 import scutil.Functions._
 import scutil.Disposable
 
+/** 
+Observing keeps hard references to observed Reactives so they are not garbage 
+collected before their last observer. Every class observing a Reactive must 
+extend this trait.
+*/
 trait Observing {
 	implicit protected val observing	= this
 	
+	// keeps hard references
 	private val connections	= new mutable.ArrayBuffer[Disposable]
 	
 	// used in Reactive and Signal
 	
 	private[screact] def observe[T](source:Reactive[_,T], effect:Effect[T]):Disposable = {
-		val	target		= new Target(effect, source)
+		val	target	= new Target(effect, source)
 		lazy val connection:Disposable	= Disposable {
 			target.dispose()
 			connections	-= connection

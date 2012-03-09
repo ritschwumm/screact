@@ -5,8 +5,9 @@ import scutil.Disposable
 
 import screact.Updates._
 
-private[screact] final class Target[T](effect:Effect[T], source:Reactive[_,T]) extends Node with Disposable {
-	// dependents stays empty all the time
+/** A final target for events emitted by an Event. Targets always get notified after all other Nodes. */
+private final class Target[T](effect:Effect[T], source:Reactive[_,T]) extends Node with Disposable {
+	// dependents stays empty at all times
 	def dependents:Iterable[Node]	= Nil
 	def addDependent(node:Node)		{}
 	def removeDependent(node:Node)	{}	

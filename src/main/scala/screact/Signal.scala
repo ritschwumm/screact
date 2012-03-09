@@ -3,7 +3,7 @@ package screact
 import scutil.Functions._
 import scutil.Disposable
 
-/** a reactive with a current value emitting change events */
+/** A Reactive with a current value emitting change events. change Events are emitted only if the value has changed. */
 trait Signal[+T] extends Reactive[T,T] { 
 	// convert to Events
 	
@@ -48,8 +48,8 @@ trait Signal[+T] extends Reactive[T,T] {
 				func(current).message
 			}
 			
-	final def flattenEvents[U](implicit witness:T=>Events[U]):Events[U]	=
-			flattenMapEvents(witness)
+	final def flattenEvents[U](implicit ev:T=>Events[U]):Events[U]	=
+			flattenMapEvents(ev)
 		
 	// monad to Cell
 	
@@ -58,8 +58,8 @@ trait Signal[+T] extends Reactive[T,T] {
 		def set(it:U) { func(current) set it }
 	}
 					
-	final def flattenCell[U](implicit witness:T=>Cell[U]):Cell[U]	=
-			flatMapCell(witness)
+	final def flattenCell[U](implicit ev:T=>Cell[U]):Cell[U]	=
+			flatMapCell(ev)
 	
 	// foldable
 		
@@ -84,8 +84,8 @@ trait Signal[+T] extends Reactive[T,T] {
 		
 	final def zip[U](that:Signal[U]):Signal[(T,U)]	= 
 			signal { (this.current, that.current) }
-	
-	final def choose[U](sourceTrue:Signal[U], sourceFalse:Signal[U])(implicit witness:T=>Boolean):Signal[U]	=
+		
+	final def choose[U](sourceTrue:Signal[U], sourceFalse:Signal[U])(implicit ev:T=>Boolean):Signal[U]	=
 			signal { if (current) sourceTrue.current else sourceFalse.current }
 
 	//------------------------------------------------------------------------------

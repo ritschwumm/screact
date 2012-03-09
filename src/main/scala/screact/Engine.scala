@@ -8,6 +8,7 @@ import scutil.log.Logging
 
 import screact.Updates._
 
+/** this is the main workhorse which schedules all activities on Reactive Nodes */
 object Engine extends Logging {
 	// while an update cycle is running, new emissions on source nodes
 	// are stored in a Buffer to be scheduled afterwards in a new cycle
@@ -36,7 +37,8 @@ object Engine extends Logging {
 	
 	private val delay	= mutable.ArrayBuffer.empty[Scheduled]
 	
-	/** execute all set and emit calls within code after it within a single update cycle */
+	/*
+	//* execute all set and emit calls within code after it within a single update cycle
 	private[screact] def batch(effect: =>Unit) {
 		updating {
 			logged {
@@ -45,6 +47,7 @@ object Engine extends Logging {
 		}
 		scheduleDelayed()
 	}
+	*/
 		
 	private[screact] def scheduleSingle(node:Scheduled) {
 		schedule(Iterable(node))
@@ -91,10 +94,10 @@ object Engine extends Logging {
 	// TODO start should be an immutable Set
 	private def updateCycle(start:Iterable[Node]) {
 		val done	= mutable.Set.empty[Node]
-		val	queue	= new SimplePrioQueue
+		val	queue	= new NodeQueue
 		queue insertMany start
 		while (queue.nonEmpty) {
-			val	head	= queue extract () getOrError "oops"
+			val	head	= queue extract () getOrError "oops, empty queue"
 			if (!(done contains head)) {
 				head.update() match {
 					case Changed	=>
@@ -132,57 +135,22 @@ object Engine extends Logging {
 	
 	private var	updating	= mutable.Stack.empty[Effect[Node]]
 	
-	private [screact] def withReader[T](readCallback:Effect[Node], block: =>T):T	= {
-		pushReader(readCallback)
-		try { block }
-		finally { popReader() }
-	}
-	
-	private[screact] def pushReader(readCallback:Effect[Node]) {
+	private [screact] def withReader[T](readCallback:Effect[Node])(block: =>T):T	= {
 		updating push readCallback
-	}
-	
-	private[screact] def popReader() {
-		updating.pop()
+		try { block }
+		finally { updating.pop() }
 	}
 	
 	private[screact] def notifyReader(node:Node) {
 		if (updating.nonEmpty) {
-			updating.top apply node
+			updating top node
 		}
 	}
 	
 	//------------------------------------------------------------------------------
-	/*
-	//## name debug
-	
-	// NOTE deactivated in Reactive atm
-	
-	case class Tag(node:Node, name:String)
-	
-	private var tags	= List[Tag]()
-	
-	def addTag(node:Node, name:String) {
-		val	tag	= Tag(node, name)
-		tags	= tag :: tags
-	}
-	
-	def readTag(node:Node):Option[String] = 
-			tags find { _.node == node } map { _.name }
-	
-	// called when a dependency has been added
-	def debugEdge(source:Node, target:Node) {
-		val sourceTag	= readTag(source)
-		val targetTag	= readTag(target)
-		if (sourceTag.isDefined || targetTag.isDefined)	{
-			println("!!!\t" + sourceTag + "\t=>\t" + targetTag)
-		}
-	}
-	*/
-	
-	//------------------------------------------------------------------------------
-	//## debug sourcedebug
+	//## source debug
 
+	// TODO hardcoded
 	val ignoredPrefixes = Set(
 		"screact.",
 		"scala.",
@@ -191,10 +159,9 @@ object Engine extends Logging {
 		"com.sun."
 	)
 		
-	// TODO hardcoded
-	def clientClass(name:String):Boolean	= 
-			name.startsWith("screact.demo") || !ignoredPrefixes.exists{ name startsWith _ }
-	
 	def clientCall:Option[StackTraceElement] =
 			Thread.currentThread.getStackTrace find { it => clientClass(it.getClassName) }
+		
+	def clientClass(name:String):Boolean	= 
+			!(ignoredPrefixes exists { name startsWith _ })
 }
