@@ -8,7 +8,7 @@ object Cell {
 	implicit def asSignal[T](it:Cell[T]):Signal[T]	= it.signal
 }
 
-/** An Emitter is a source for a Signal and can trigger an update cycle in the Engine */
+/** An Cell is a source for a Signal and can trigger an update cycle in the Engine */
 trait Cell[T] extends Disposable { outer =>
 	val signal:Signal[T]
 	def set(value:T):Unit

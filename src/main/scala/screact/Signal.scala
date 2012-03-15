@@ -10,7 +10,6 @@ trait Signal[+T] extends Reactive[T,T] {
 	final def changes:Events[T]	= 
 			events { message }
 		
-	// .slide.changes
 	final def slideChanges[U](func:(T,T)=>U):Events[U] = {
 		var	prev	= current
 		changes map { next =>

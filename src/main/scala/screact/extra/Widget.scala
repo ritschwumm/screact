@@ -58,22 +58,18 @@ object Widget {
 		var delayed:Option[T]	= None
 		
 		def emit(value:T) {
-			if (delayed.isEmpty) {
+			val	first	= delayed.isEmpty
+			delayed		= Some(value)
+			if (first) {
 				edt {
-					Engine scheduleSingle thunk { 
+					Engine schedule thunk { 
 						msg		= delayed
 						delayed	= None
 						Some(outer) 
 					}
 				}
 			}
-			delayed	= Some(value)
 		}  
-		
-		private def emitImpl(value:T):Option[Node]	= {
-			msg	= Some(value)
-			Some(outer)
-		}
 		
 		def calculate() {}	// msg does not change in here
 		

@@ -6,7 +6,8 @@ import scala.collection.mutable
 
 /** saves weak references by only keeping one per node */
 private object NodeSet {
-	val	nodes	= new mutable.HashMap[Long,WeakReference[Node]]	// TODO maybe use a LongMap instead
+	// TODO maybe use a LongMap instead
+	val	nodes	= new mutable.HashMap[Long,WeakReference[Node]]
 	
 	var	id	= 0L
 	

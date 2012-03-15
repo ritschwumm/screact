@@ -7,7 +7,7 @@ private [screact] class SourceEvents[T] extends Events[T] { outer =>
 	
 	
 	def emit(value:T) {
-		Engine scheduleSingle thunk { emitImpl(value) }
+		Engine schedule thunk { emitImpl(value) }
 	}  
 	
 	private def emitImpl(value:T):Option[Node]	= {
@@ -24,7 +24,6 @@ private [screact] class SourceEvents[T] extends Events[T] { outer =>
 	
 	def reset() { 
 		msg	= None
-		// last = "" 
 	}
 	
 	// init()			// not necessary, we don't have dependencies

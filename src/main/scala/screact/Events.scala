@@ -128,6 +128,11 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def sum[U](that:Events[U]):Events[Either[T,U]]	= 
 			(this map { Left(_) }) orElse (that map { Right(_) })
 		
+	final def split[U,V](implicit ev:T=>Either[U,V]):(Events[U],Events[V])	= 
+			(	events { message flatMap { it:T => ev(it).left.toOption		} },
+				events { message flatMap { it:T => ev(it).right.toOption	} }
+			)
+		
 	final def partition(func:T=>Boolean):(Events[T],Events[T])	= 
 			(	events { message filter  func },
 				events { message filter !func }
