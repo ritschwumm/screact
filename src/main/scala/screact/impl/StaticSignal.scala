@@ -1,9 +1,5 @@
 package screact
 
-/*
-def constant[T](value:T):Signal[T]	= signal { value }
-*/
-
 // NOTE never notifies any dependents
 private final class StaticSignal[T](value:T) extends Signal[T] {
 	val	cur	= value

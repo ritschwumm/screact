@@ -7,12 +7,10 @@ private[screact] trait Node {
 	val origin	= Engine.clientCall
 	
 	private[screact] def rank:Int
+	private[screact] def sinks:Sinks
+
 	private[screact] def update():Update
 	private[screact] def reset():Unit
 	
-	private[screact] def dependents:Iterable[Node]
-	private[screact] def addDependent(node:Node):Unit
-	private[screact] def removeDependent(node:Node):Unit
-	
-	private[screact] var id	= NodeSet register this
+	private[screact] var id	= HasSinks register this
 }

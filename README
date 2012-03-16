@@ -10,3 +10,13 @@ Use these commands to build:
 	git clone git@github.com:ritschwumm/screact.git
 	cd screact
 	sbt publish-local
+	
+features
+-	glitch protection: signals and events never see stale values
+-	extensive set of combinators
+-	simple signal DSL
+-	easy to integrate with swing
+-	no compiler plugin needed
+
+misfeatures
+-	cannot be used from multiple threads at the moment

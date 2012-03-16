@@ -63,7 +63,7 @@ object Engine extends Logging {
 				head.update() match {
 					case Changed	=>
 						// value has changed, unschedule the head and schedule the head node's dependencies
-						queue insertMany head.dependents
+						queue insertMany head.sinks.all
 						done	+= head
 					case Unchanged	=>
 						// value has not changed, unschedule the head and be done.
@@ -82,13 +82,10 @@ object Engine extends Logging {
 		
 		// TODO ugly hack to get rid of WeakReferences
 		if (doneSize > 10) {
-			NodeSet.gc()
+			HasSinks.gc()
 		}
 		if (doneSize > 100) {
 			System.gc()
-		}
-		if (NodeSet.id > (1L<<32)) {
-			NodeSet.compact()
 		}
 	}
 

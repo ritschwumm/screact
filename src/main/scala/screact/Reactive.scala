@@ -15,15 +15,12 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable {
 	
 	private var disposed	= false
 	
-	// TODO why does keeping strong refs to sources here help against lost connections?
-	// Nodes thi Reactive reads from
+	// Nodes this Reactive reads from
+	// NOTE without this keeping string refs to the source Nodes we loose connections
 	private var sources	= mutable.ArrayBuffer[Node]()
 	
-	// Nodes readin data from this Reactive
-	private val deps		= new NodeSet
-	private[screact] final def dependents:Iterable[Node]	= deps.all
-	private[screact] final def addDependent(node:Node) 		{ deps add		node }
-	private[screact] final def removeDependent(node:Node)	{ deps remove	node }
+	// Nodes reading data from this Reactive
+	private[screact] val sinks	= new HasSinks
 	
 	private[screact] final def update():Update = {
 		if (disposed)	return Unchanged
@@ -46,9 +43,10 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable {
 		val	oldRank	= rank
 		rank	= 0
 		
+		// just to keep references during this update cycle
+		val oldSources	= sources
 		// NOTE i'm already in the queue, so even if i get reranked this will not affect whether i'm scheduled or not
-		sources foreach { _ removeDependent this }
-		// TODO is this a good idea? i needed to hold my sources to avoid missing dependencies in the previous version
+		sources foreach { _.sinks remove this }
 		sources.clear()
 		
 		// called when calculate reads a source
@@ -58,21 +56,23 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable {
 				rank	= sourceRank + 1
 			}
 			if (checkRank && rank > oldRank) {
-				// newSources	= Nil
 				throw RankMismatch
 			}
+			source.sinks add this
 			sources += source
 		}
 			
 		Engine.withReader(readCallback) {
 			try {
-				calculate()	// sets rank and sources via readCallback
-				sources foreach { _ addDependent this }  
+				// call readCallback which in turn
+				// -	updates our rank
+				// -	updates our sources
+				// -	registers us as a dependent on the source
+				calculate()	
 				true
 			}
 			catch { 
-				case RankMismatch	=>
-					false
+				case RankMismatch	=> false
 			}
 		}
 	}
@@ -94,9 +94,9 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable {
 	
 	final def dispose() {
 		disposed	= true
-		sources foreach { _ removeDependent this }
+		sources foreach { _.sinks remove this }
 		sources.clear()
-		deps.clear()
+		sinks.clear()
 	}
 	
 	//------------------------------------------------------------------------------
