@@ -8,44 +8,60 @@ import scutil.log.Logging
 
 import screact.Updates._
 
+/** managed one Engine per Thread */
+object Engine {
+	private val	threadLocal	= new ThreadLocal[Engine]
+	
+	def access:Engine	= {
+		val	oldEngine	= threadLocal.get
+		if (oldEngine != null)	return oldEngine
+		
+		val newEngine	= new Engine
+		threadLocal set newEngine
+		newEngine
+	}
+}
+
 /** this is the main workhorse which schedules all activities on Reactive Nodes */
-object Engine extends Logging {
+class Engine extends Logging {
+	private[screact] val sinksCache	= new SinksCache
+	
 	//------------------------------------------------------------------------------
 	//## scheduler entrypoint
 	
-	// while an update cycle is running, new emissions on source nodes
-	// are stored in a Buffer to be scheduled afterwards in a new cycle
-	private var updating	= 0
+	/** external events */
+	private val external	= mutable.ArrayBuffer.empty[Scheduled]
 	
-	private val delay	= mutable.ArrayBuffer.empty[Scheduled]
+	// true within an update cycle
+	private var updating	= false
 	
 	private[screact] def schedule(node:Scheduled) {
 		scheduleMany(Iterable(node))
 	}
 	
+	// TODO what if this is called while we are already scheduled?
 	private def scheduleMany(nodes:Iterable[Scheduled]) {
-		if (updating != 0) {
-			delay ++= nodes
-			return
-		}
+		external	++= nodes
 		
-		updating	+= 1
+		// delayed and new external events are immediately re-scheduled
+		while (!updating && external.nonEmpty) {
+			scheduleInternal()
+		}
+	}
+	
+	private def scheduleInternal() {
 		try  {
-			val	todo	= nodes flatMap { _ apply () }
-			updateCycle(todo)
+			updating	= true
+			val	internal	= external flatMap { _ apply () }
+			external.clear()
+			// this may schedule new delayed events, those are treated as external
+			updateCycle(internal)
 		}
 		catch { case e => 
 			ERROR(e) 
 		}
 		finally {
-			updating	-= 1
-		}
-			
-		if (delay.nonEmpty) {
-			val	todo	= delay.toArray
-			// Debug.line("delayed nodes: " + todo.size)
-			delay.clear()
-			scheduleMany(todo)
+			updating	= false
 		}
 	}
 	
@@ -82,7 +98,7 @@ object Engine extends Logging {
 		
 		// TODO ugly hack to get rid of WeakReferences
 		if (doneSize > 10) {
-			HasSinks.gc()
+			sinksCache.gc()
 		}
 		if (doneSize > 100) {
 			System.gc()
@@ -101,6 +117,8 @@ object Engine extends Logging {
 	}
 	
 	private[screact] def notifyReader(node:Node) {
+		if (node.engine != this)	throw WrongThreadException
+		
 		if (readCallbacks.nonEmpty) {
 			readCallbacks top node
 		}

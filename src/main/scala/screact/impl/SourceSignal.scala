@@ -6,8 +6,9 @@ private [screact] class SourceSignal[T](initial:T) extends Signal[T] { outer =>
 	var cur:T			= initial
 	var msg:Option[T]	= None
 	
+	/** schedules as an external event */
 	def set(value:T) {
-		Engine schedule thunk { setImpl(value) }
+		engine schedule thunk { setImpl(value) }
 	}  
 	
 	private def setImpl(value:T):Option[Node]	= {

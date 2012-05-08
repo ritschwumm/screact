@@ -13,23 +13,23 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable {
 	private[screact] def cur:Cur
 	private[screact] def msg:Option[Msg]
 	
-	private var disposed	= false
+	private var disposedFlag	= false
 	
 	// Nodes this Reactive reads from
 	// NOTE without this keeping string refs to the source Nodes we loose connections
 	private var sources	= mutable.ArrayBuffer[Node]()
 	
 	// Nodes reading data from this Reactive
-	private[screact] val sinks	= new HasSinks
+	private[screact] val sinks	= new HasSinks(engine.sinksCache)
 	
 	private[screact] final def update():Update = {
-		if (disposed)	return Unchanged
+		if (disposedFlag)	return Unchanged
 		
 		val	ok	= updateInternal(true)
-		if (!ok)		return Rerank
+		if (!ok)			return Rerank
 		
 		val	notify	= msg.isDefined
-		if (!notify)	return Unchanged
+		if (!notify)		return Unchanged
 			
 		Changed
 	}
@@ -62,7 +62,7 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable {
 			sources += source
 		}
 			
-		Engine.withReader(readCallback) {
+		engine.withReader(readCallback) {
 			try {
 				// call readCallback which in turn
 				// -	updates our rank
@@ -82,18 +82,20 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable {
 	
 	// called by deps between update and reset 
 	final def current:Cur = {
-		Engine notifyReader this
+		engine notifyReader this
 		cur
 	}
 	
 	// called by deps between update and reset
 	final def message:Option[Msg] = {
-		Engine notifyReader this
+		engine notifyReader this
 		msg
 	}
 	
+	final def disposed:Boolean	= disposedFlag
+	
 	final def dispose() {
-		disposed	= true
+		disposedFlag	= true
 		sources foreach { _.sinks remove this }
 		sources.clear()
 		sinks.clear()

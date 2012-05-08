@@ -5,8 +5,9 @@ import scutil.Functions._
 private [screact] class SourceEvents[T] extends Events[T] { outer =>
 	var	msg:Option[T]	= None
 	
+	/** schedules as an external event */
 	def emit(value:T) {
-		Engine schedule thunk { emitImpl(value) }
+		engine schedule thunk { emitImpl(value) }
 	}  
 	
 	private def emitImpl(value:T):Option[Node]	= {

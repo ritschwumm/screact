@@ -8,9 +8,11 @@ import scutil.gui.SwingUtil._
 import screact._
 
 /** used to connect Swing widgets to the reactive world */ 
-object Widget {
+object SwingWidget {
 	/** simply emit events from some Connectable */
 	def events[T](connect:Effect[T]=>Disposable):Events[T]	= {
+		require(withinEDT, "SwingWidget may not be constructed outside the EDT")
+		
 		val	out			= new SourceEvents[T]
 		val disposable	= connect(out.emit)
 		out
@@ -26,7 +28,9 @@ object Widget {
 	events are fired on user interaction but never on
 	signal changes.
 	*/
-	def transformer[T,X](input:Signal[T], connect:Effect[X]=>Disposable, getter:Thunk[T], setter:Effect[T])(implicit ob:Observing):Events[T]	= {
+	def transformer[S,T,X](input:Signal[S], connect:Effect[X]=>Disposable, getter:Thunk[T], setter:Effect[S])(implicit ob:Observing):Events[T]	= {
+		require(withinEDT, "SwingWidget may not be constructed outside the EDT")
+		
 		val blocker	= new Blocker
 		val events	= new WidgetEvents[T]
 		
@@ -61,8 +65,9 @@ object Widget {
 			val	first	= delayed.isEmpty
 			delayed		= Some(value)
 			if (first) {
+				// TODO use the Domain in to schedule
 				edt {
-					Engine schedule thunk { 
+					engine schedule thunk { 
 						msg		= delayed
 						delayed	= None
 						Some(outer) 

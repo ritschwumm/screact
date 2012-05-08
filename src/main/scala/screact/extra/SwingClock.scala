@@ -1,11 +1,12 @@
 package screact.extra
 
-import javax.swing.Timer
 import java.lang.ref.WeakReference
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
+import javax.swing.Timer
 
 import scutil.Functions._
+import scutil.gui.SwingUtil._
 import scutil.time._
 
 import screact._
@@ -23,6 +24,8 @@ object SwingClock {
 		nulling a reference from an object to an Events object helps.
 	*/
 	def apply(cycle:Duration, delay:Duration):Events[Instant] = {
+		require(withinEDT, "SwingClock may not be constructed outside the EDT")
+		
 		val output		= new SourceEvents[Instant]
 		val outputRef	= new WeakReference(output)
 		
@@ -45,11 +48,11 @@ object SwingClock {
 	private class MyActionListener(stop:Task, outputRef:WeakReference[SourceEvents[Instant]]) extends ActionListener {
 		def actionPerformed(ev:ActionEvent) {
 			val output	= outputRef.get
-			if (output != null) {
+			if (output != null && !output.disposed) {
 				output emit Instant.now
 			}
 			else {
-				// NOTE this happens only when ther reference to the SwingClock is dropped
+				// NOTE this happens only when the reference to the SwingClock is dropped
 				stop()
 			}
 		}
