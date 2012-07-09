@@ -21,6 +21,16 @@ trait Events[+T] extends Reactive[Unit,T] {
 		}
 	}
 	
+	final def scan[U](initial:U, func:(U,T)=>U):Signal[U]	= {
+		var value	= initial
+		signal {
+			message foreach { msgval => 
+				value = func(value, msgval) 
+			}
+			value
+		}
+	}
+	
 	// with a zero
 	
 	final def filter(func:Predicate[T]):Events[T]	= 
@@ -58,20 +68,6 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def flatten[U](implicit ev:T=>Events[U]):Events[U]	= 
 			this flatMap ev
 		
-	// foldable
-	
-	// TODO add reduce which swallows the first event
-			
-	final def fold[U](initial:U, func:(U,T)=>U):Events[U]	= {
-		var	previous	= initial
-		events {
-			message map { messageVal => 
-				previous	= func(previous, messageVal) 
-				previous
-			}
-		}
-	}
-	
 	// monoid with never
 	
 	final def orElse[U>:T](that:Events[U]):Events[U]	=  (this,that) match {

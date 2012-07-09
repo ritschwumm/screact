@@ -6,11 +6,12 @@ object Putter {
 	def onMany[T](value:Signal[T], putters:Iterable[Events[T=>T]]):Events[T]	=
 			on(value, sum(putters))
 		
-	// TODO looks like Partial#put
-	def on[T](value:Signal[T], putter:Events[T=>T]):Events[T]	=
-			putter snapshotWith value map { case (f,v) => f(v) } 
+	// TODO looks like MasterPartial#put
+	def on[T](value:Signal[T], puts:Events[T=>T]):Events[T]	=
+			puts snapshotWith value map { case (f,v) => f(v) } 
 	
 	//------------------------------------------------------------------------------
+	//## Events[T=>T] and never[T=>T] form a monoid similar to T=>T and identity
 	
 	def zero[T]:Events[T=>T]	= never[T=>T]
 		

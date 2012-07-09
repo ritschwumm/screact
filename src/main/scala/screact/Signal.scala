@@ -10,15 +10,15 @@ trait Signal[+T] extends Reactive[T,T] {
 	final def changes:Events[T]	= 
 			events { message }
 		
-	final def slideChanges[U](func:(T,T)=>U):Events[U] = {
-		var	prev	= current
+	final def slide[U](func:(T,T)=>U):Events[U] = {
+		var	previous	= current
 		changes map { next =>
-			val	out	= func(prev,next)
-			prev	= next
+			val	out		= func(previous, next)
+			previous	= next
 			out
 		}
 	}
-	
+		
 	// functor
 	
 	final def map[U](func:T=>U):Signal[U]	= 
@@ -58,20 +58,6 @@ trait Signal[+T] extends Reactive[T,T] {
 	final def flattenCell[U](implicit ev:T=>Cell[U]):Cell[U]	=
 			this flatMapCell ev
 	
-	// foldable
-		
-	// TODO add fold ?
-	
-	final def reduce[U](func:(T,T)=>U):Signal[U] = {
-		var	prev	= this.current
-		signal {
-			val next	= current
-			val	out		= func(prev, next)
-			prev	= next
-			out
-		}
-	}
-	
 	// delayable
 	
 	final def delay[U>:T](initial:U)(implicit observing:Observing):Signal[U]	= 
@@ -84,7 +70,7 @@ trait Signal[+T] extends Reactive[T,T] {
 		
 	final def choose[U](sourceTrue:Signal[U], sourceFalse:Signal[U])(implicit ev:T=>Boolean):Signal[U]	=
 			signal { if (current) sourceTrue.current else sourceFalse.current }
-
+	
 	//------------------------------------------------------------------------------
 	//## Observing forwarder
 	

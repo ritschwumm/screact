@@ -1,8 +1,7 @@
 package screact
 
-import scutil.Bijection
 import scutil.Disposable
-import scutil.Lens
+import scutil.data._
 
 object Cell {
 	implicit def asSignal[T](it:Cell[T]):Signal[T]	= it.signal
