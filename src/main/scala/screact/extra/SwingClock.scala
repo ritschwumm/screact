@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import javax.swing.Timer
 
-import scutil.Functions._
+import scutil.lang._
 import scutil.gui.SwingUtil._
 import scutil.time._
 

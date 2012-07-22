@@ -1,7 +1,6 @@
 package screact
 
-import scutil.Disposable
-import scutil.data._
+import scutil.lang._
 
 object Cell {
 	implicit def asSignal[T](it:Cell[T]):Signal[T]	= it.signal

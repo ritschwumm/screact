@@ -1,6 +1,6 @@
 package screact.extra
 
-import scutil.Functions._
+import scutil.lang._
 
 import screact._
 

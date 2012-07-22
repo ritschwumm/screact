@@ -1,7 +1,6 @@
 package screact
 
-import scutil.Disposable
-import scutil.data.Bijection
+import scutil.lang._
 
 object Emitter {
 	implicit def asEvents[T](it:Emitter[T]):Events[T]	= it.events

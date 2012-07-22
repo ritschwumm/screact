@@ -1,6 +1,6 @@
 package screact
 
-import scutil.Functions._
+import scutil.lang._
 
 private [screact] class SourceEvents[T] extends Events[T] { outer =>
 	var	msg:Option[T]	= None

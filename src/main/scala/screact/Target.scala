@@ -1,7 +1,6 @@
 package screact
 
-import scutil.Functions._
-import scutil.Disposable
+import scutil.lang._
 
 import screact.Updates._
 

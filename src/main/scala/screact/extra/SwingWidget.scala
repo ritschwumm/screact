@@ -1,8 +1,6 @@
 package screact.extra
 
-import scutil.Functions._
-import scutil.Connectable
-import scutil.Disposable
+import scutil.lang._
 import scutil.gui.SwingUtil._
 
 import screact._

@@ -2,8 +2,8 @@ package screact
 
 import scala.collection.mutable
 
+import scutil.lang._
 import scutil.Implicits._
-import scutil.Functions._
 import scutil.log.Logging
 
 import screact.Updates._

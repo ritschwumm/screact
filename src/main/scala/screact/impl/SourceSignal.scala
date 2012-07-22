@@ -1,6 +1,6 @@
 package screact
 
-import scutil.Functions._
+import scutil.lang._
 
 private [screact] class SourceSignal[T](initial:T) extends Signal[T] { outer =>
 	var cur:T			= initial

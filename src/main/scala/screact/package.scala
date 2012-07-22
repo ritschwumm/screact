@@ -1,6 +1,4 @@
-import scutil.Functions._
-
-import scutil.Functions._
+import scutil.lang._
 
 package object screact {
 	type Scheduled	= Thunk[Option[Node]]
