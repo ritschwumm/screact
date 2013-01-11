@@ -67,6 +67,12 @@ trait Signal[+T] extends Reactive[T,T] {
 	final def zip[U](that:Signal[U]):Signal[(T,U)]	= 
 			signal { (this.current, that.current) }
 		
+	final def zipBy[U](func:T=>U):Signal[(T,U)]	=
+			this map { it => (it,func(it)) }
+		
+	final def zipWith[U,V](that:Signal[U])(func:(T,U)=>V):Signal[V]	=
+			signal { func(this.current, that.current) }
+		
 	final def unzip[U,V](implicit ev:T=>(U,V)):(Signal[U],Signal[V])	=
 			(map(_._1), map(_._2))
 		

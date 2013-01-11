@@ -37,6 +37,7 @@ trait Observing {
 	
 	private[screact] def observeNow[T](source:Signal[T], effect:Effect[T]):Disposable = {
 		val connection	= observe(source, effect)
+		// TODO display exceptions caught here?
 		effect(source.current)
 		connection
 	}
