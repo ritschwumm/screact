@@ -76,7 +76,7 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 			catch { 
 				case RankMismatch	=>
 					false
-				case e	=>
+				case e:Exception	=>
 					ERROR("calculate failed", this, e)
 					true
 			}

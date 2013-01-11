@@ -63,7 +63,7 @@ class Engine extends Logging {
 			// this may schedule new delayed events, those are treated as external
 			updateCycle(internal)
 		}
-		catch { case e => 
+		catch { case e:Exception => 
 			ERROR(e) 
 		}
 		finally {

@@ -17,7 +17,7 @@ private final class Target[T](effect:Effect[T], source:Reactive[_,T]) extends No
 			source.msg foreach effect
 		}
 		catch { 
-			case e	=>
+			case e:Exception	=>
 				ERROR("update failed", this, e)
 		}
 		Unchanged
