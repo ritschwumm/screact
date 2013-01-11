@@ -88,12 +88,14 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 	
 	// called by deps between update and reset 
 	final def current:Cur = {
+		if (engine != Engine.access)	throw WrongThreadException
 		engine notifyReader this
 		cur
 	}
 	
 	// called by deps between update and reset
 	final def message:Option[Msg] = {
+		if (engine != Engine.access)	throw WrongThreadException
 		engine notifyReader this
 		msg
 	}

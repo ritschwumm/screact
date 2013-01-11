@@ -128,8 +128,6 @@ class Engine extends Logging {
 	}
 	
 	private[screact] def notifyReader(node:Node) {
-		if (node.engine != this)	throw WrongThreadException
-		
 		if (readCallbacks.nonEmpty) {
 			readCallbacks top node
 		}

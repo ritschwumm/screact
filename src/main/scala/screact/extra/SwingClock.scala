@@ -3,7 +3,8 @@ package screact.extra
 import java.lang.ref.WeakReference
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
-import javax.swing.Timer
+import java.util.Timer
+import java.util.TimerTask
 
 import scutil.lang._
 import scutil.gui.SwingUtil._
@@ -13,6 +14,8 @@ import screact._
 
 /** emits time events at regular intervals */
 object SwingClock {
+	private val timer	= new Timer(true)
+	
 	def apply(cycle:Duration):Events[Instant] = apply(cycle, cycle)
 	
 	/*
@@ -29,31 +32,24 @@ object SwingClock {
 		val output		= new SourceEvents[Instant]
 		val outputRef	= new WeakReference(output)
 		
-		lazy val timer:Timer	= new Timer(
-				millis(cycle), 
-				new MyActionListener(
-						() => timer.stop(), 
-						outputRef))
+		val task	= new MyTimerTask(outputRef)
+		timer schedule (task, delay.millis, cycle.millis)
 		
-		timer setInitialDelay millis(delay)
-		timer.start()
-		
-		// NOTE this only references the Events, but not the complete Emitter
 		output
 	}
 	
-	// BETTER ensure this doesn't exceed Int.MaxValue
-	private def millis(duration:Duration):Int	= duration.millis.toInt
-	
-	private class MyActionListener(stop:Task, outputRef:WeakReference[SourceEvents[Instant]]) extends ActionListener {
-		def actionPerformed(ev:ActionEvent) {
-			val output	= outputRef.get
-			if (output != null && !output.disposed) {
-				output emit Instant.now
+	private class MyTimerTask(outputRef:WeakReference[SourceEvents[Instant]]) extends TimerTask {
+		def run() {
+			val alive	= edtWait {
+				val output	= outputRef.get
+				val alive	= output != null && !output.disposed
+				if (alive) {
+					output emit Instant.now
+				}
+				alive
 			}
-			else {
-				// NOTE this happens only when the reference to the SwingClock is dropped
-				stop()
+			if (!alive) {
+				cancel()
 			}
 		}
 	}
