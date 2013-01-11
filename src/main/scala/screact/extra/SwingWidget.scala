@@ -11,9 +11,10 @@ object SwingWidget {
 	def events[T](connect:Effect[T]=>Disposable):Events[T]	= {
 		require(withinEDT, "SwingWidget may not be constructed outside the EDT")
 		
-		val	out			= new SourceEvents[T]
-		val disposable	= connect(out.emit)
-		out
+		val	events		= new SourceEvents[T]
+		// BETTER call this at some time
+		val disposable	= connect(events.emit)
+		events
 	}
 	
 	/** signal values by some getter, changing on events from some Connectable */
@@ -52,8 +53,8 @@ object SwingWidget {
 	
 	//------------------------------------------------------------------------------
 	
-	// NOTE in contrast to SourceEvents, this does multiple calls to emit
-	// within the same cycle. the last emit wins.
+	// NOTE in contrast to SourceEvents, this allows multiple calls to emit within the same cycle.
+	// the last emit wins.
 	private class WidgetEvents[T] extends Events[T] { outer =>
 		var	msg:Option[T]	= None
 		
