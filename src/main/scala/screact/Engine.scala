@@ -100,9 +100,11 @@ class Engine extends Logging {
 		if (doneSize > 10) {
 			sinksCache.gc()
 		}
+		/*
 		if (doneSize > 100) {
 			System.gc()
 		}
+		*/
 	}
 
 	//------------------------------------------------------------------------------
