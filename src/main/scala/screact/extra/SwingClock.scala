@@ -27,7 +27,7 @@ object SwingClock {
 		nulling a reference from an object to an Events object helps.
 	*/
 	def apply(cycle:Duration, delay:Duration):Events[Instant] = {
-		require(withinEDT, "SwingClock may not be constructed outside the EDT")
+		require(insideEDT, "SwingClock may not be constructed outside the EDT")
 		
 		val output		= new SourceEvents[Instant]
 		val outputRef	= new WeakReference(output)

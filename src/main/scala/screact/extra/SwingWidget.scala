@@ -9,7 +9,7 @@ import screact._
 object SwingWidget {
 	/** simply emit events from some Connectable */
 	def events[T](connect:Effect[T]=>Disposable):Events[T]	= {
-		require(withinEDT, "SwingWidget may not be constructed outside the EDT")
+		require(insideEDT, "SwingWidget may not be constructed outside the EDT")
 		
 		val	events		= new SourceEvents[T]
 		// BETTER call this at some time
@@ -28,7 +28,7 @@ object SwingWidget {
 	signal changes.
 	*/
 	def transformer[S,T,X](input:Signal[S], connect:Effect[X]=>Disposable, getter:Thunk[T], setter:Effect[S])(implicit ob:Observing):Events[T]	= {
-		require(withinEDT, "SwingWidget may not be constructed outside the EDT")
+		require(insideEDT, "SwingWidget may not be constructed outside the EDT")
 		
 		val blocker	= new Blocker
 		val events	= new WidgetEvents[T]
