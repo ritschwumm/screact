@@ -67,6 +67,9 @@ trait Signal[+T] extends Reactive[T,T] {
 	final def zip[U](that:Signal[U]):Signal[(T,U)]	= 
 			signal { (this.current, that.current) }
 		
+	final def unzip[U,V](implicit ev:T=>(U,V)):(Signal[U],Signal[V])	=
+			(map(_._1), map(_._2))
+		
 	final def choose[U](sourceTrue:Signal[U], sourceFalse:Signal[U])(implicit ev:T=>Boolean):Signal[U]	=
 			signal { if (current) sourceTrue.current else sourceFalse.current }
 	

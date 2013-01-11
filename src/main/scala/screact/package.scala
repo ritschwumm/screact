@@ -18,4 +18,6 @@ package object screact {
 		val events	= new SourceEvents[T]
 		def emit(it:T) { events emit it }
 	}
+	
+	def decouple[T](value: =>T):T					= Engine.access withoutReader value
 }

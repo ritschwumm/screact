@@ -121,6 +121,9 @@ trait Events[+T] extends Reactive[Unit,T] {
 		}
 	}
 	
+	final def unzip[U,V](implicit ev:T=>(U,V)):(Events[U],Events[V])	=
+			(map(_._1), map(_._2))
+	
 	final def sum[U](that:Events[U]):Events[Either[T,U]]	= 
 			(this map { Left(_) }) orElse (that map { Right(_) })
 		

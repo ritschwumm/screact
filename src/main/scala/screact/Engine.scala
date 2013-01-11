@@ -74,7 +74,7 @@ class Engine extends Logging {
 	//------------------------------------------------------------------------------
 	//## update cycle
 	
-	// TODO start should be an immutable Set
+	// BETTER start should be an immutable Set
 	private def updateCycle(start:Iterable[Node]) {
 		val done	= mutable.Set.empty[Node]
 		val	queue	= new NodeQueue
@@ -118,6 +118,9 @@ class Engine extends Logging {
 	
 	private var	readCallbacks	= mutable.Stack.empty[Effect[Node]]
 	
+	private [screact] def withoutReader[T](block: =>T):T	=
+			withReader((_:Node) => ())(block)
+		
 	private [screact] def withReader[T](readCallback:Effect[Node])(block: =>T):T	= {
 		readCallbacks push readCallback
 		try { block }
