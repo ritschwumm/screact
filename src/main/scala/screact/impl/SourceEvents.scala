@@ -1,8 +1,11 @@
 package screact
 
 import scutil.lang._
+import scutil.log._
 
-private [screact] class SourceEvents[T] extends Events[T] { outer =>
+// BETTER aggregate logging
+
+private [screact] class SourceEvents[T] extends Events[T] with Logging { outer =>
 	var	msg:Option[T]	= None
 	
 	/** schedules as an external event */
@@ -11,13 +14,18 @@ private [screact] class SourceEvents[T] extends Events[T] { outer =>
 	}  
 	
 	private def emitImpl(value:T):Option[Node]	= {
-		require(msg.isEmpty,	
-				"cannot emit an event twice within the same update cycle" +
-				" for: " + origin + 
-				" message: " + msg.get)
-		
-		msg	= Some(value)
-		Some(outer)
+		if (msg.isEmpty) {
+			msg	= Some(value)
+			Some(outer)
+		}
+		else {
+			ERROR(
+					"cannot emit an event twice within the same update cycle", 
+					origin, 
+					msg.get,
+					value)
+			None
+		}
 	}
 	
 	def calculate() {}	// msg does not change in here

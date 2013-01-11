@@ -36,14 +36,20 @@ class Engine extends Logging {
 	private var updating	= false
 	
 	private[screact] def schedule(node:Scheduled) {
-		scheduleMany(Iterable(node))
+		external	+= node
+		scheduleLoop()
 	}
 	
+	/*
 	// TODO what if this is called while we are already scheduled?
 	private def scheduleMany(nodes:Iterable[Scheduled]) {
 		external	++= nodes
-		
-		// delayed and new external events are immediately re-scheduled
+		scheduleLoop()
+	}
+	*/
+	
+	// delayed and new external events are immediately re-scheduled
+	private def scheduleLoop() {
 		while (!updating && external.nonEmpty) {
 			scheduleInternal()
 		}

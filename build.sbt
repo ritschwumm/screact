@@ -2,7 +2,7 @@ name			:= "screact"
 
 organization	:= "de.djini"
 
-version			:= "0.9.1"
+version			:= "0.9.2"
 
 scalaVersion	:= "2.9.2"
 

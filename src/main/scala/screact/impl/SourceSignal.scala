@@ -1,8 +1,11 @@
 package screact
 
 import scutil.lang._
+import scutil.log._
 
-private [screact] class SourceSignal[T](initial:T) extends Signal[T] { outer =>
+// BETTER aggregate logging
+
+private [screact] class SourceSignal[T](initial:T) extends Signal[T] with Logging { outer =>
 	var cur:T			= initial
 	var msg:Option[T]	= None
 	
@@ -13,16 +16,20 @@ private [screact] class SourceSignal[T](initial:T) extends Signal[T] { outer =>
 	
 	private def setImpl(value:T):Option[Node]	= {
 		if (value != cur) {
-			require(msg.isEmpty,	
-					"cannot set a signal twice within the same update cycle"	+
-					" for: " + origin + 
-					" message: " + msg.get +
-					" was: " + cur +
-					" now: " + value)
-				
-			cur	= value
-			msg	= Some(value)
-			Some(outer)
+			if (msg.isEmpty) {
+				cur	= value
+				msg	= Some(value)
+				Some(outer)
+			}
+			else {
+				ERROR(
+						"cannot set a signal twice within the same update cycle",
+						origin,
+						msg.get,
+						cur,
+						value)
+				None
+			}
 		}
 		else {
 			None

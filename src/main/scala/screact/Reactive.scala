@@ -3,11 +3,14 @@ package screact
 import scala.collection.mutable
 
 import scutil.lang._
+import scutil.log._
 
 import screact.Updates._
 
+// BETTER aggregate logging
+
 /** base trait for reactive values with some current value (may be Unit) and emitting events. */
-trait Reactive[+Cur,+Msg] extends Node with Disposable { 
+trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging { 
 	private[screact] final var rank:Int	= 0
 	private[screact] def cur:Cur
 	private[screact] def msg:Option[Msg]
@@ -67,11 +70,15 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable {
 				// -	updates our rank
 				// -	updates our sources
 				// -	registers us as a dependent on the source
-				calculate()	
+				calculate()
 				true
 			}
 			catch { 
-				case RankMismatch	=> false
+				case RankMismatch	=>
+					false
+				case e	=>
+					ERROR("calculate failed", this, e)
+					true
 			}
 		}
 	}
