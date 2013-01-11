@@ -21,7 +21,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 		}
 	}
 	
-	final def scan[U](initial:U, func:(U,T)=>U):Signal[U]	= {
+	final def scan[U](initial:U)(func:(U,T)=>U):Signal[U]	= {
 		var value	= initial
 		signal {
 			message foreach { msgval => 
@@ -102,6 +102,12 @@ trait Events[+T] extends Reactive[Unit,T] {
 		when map { (_, what) }
 	}
 	
+	final def gate(that:Signal[Boolean]):Events[T]	= events {
+		val when	= this.message
+		val gate	= that.current
+		when filter { _ => gate }
+	}
+	
 	// delayable
 	
 	/** emits in the next update cycle */
@@ -127,7 +133,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def sum[U](that:Events[U]):Events[Either[T,U]]	= 
 			(this map { Left(_) }) orElse (that map { Right(_) })
 		
-	final def split[U,V](implicit ev:T=>Either[U,V]):(Events[U],Events[V])	= 
+	final def unsum[U,V](implicit ev:T=>Either[U,V]):(Events[U],Events[V])	= 
 			(	events { message flatMap { it:T => ev(it).left.toOption		} },
 				events { message flatMap { it:T => ev(it).right.toOption	} }
 			)
@@ -195,9 +201,4 @@ trait Events[+T] extends Reactive[Unit,T] {
 			}
 		}
 	}
-	
-	// TODO ugly
-	final def someUntil(that:Events[_]):Signal[Option[T]]	=
-			// (this map Some.apply _) merge (that tag None)
-			this sum that map { _.left.toOption } hold None
 }

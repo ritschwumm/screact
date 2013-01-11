@@ -41,11 +41,11 @@ trait Signal[+T] extends Reactive[T,T] {
 	
 	// monad to Events
 	
-	final def flattenMapEvents[U](func:T=>Events[U]):Events[U]	=
+	final def flatMapEvents[U](func:T=>Events[U]):Events[U]	=
 			events { func(current).message }
 			
 	final def flattenEvents[U](implicit ev:T=>Events[U]):Events[U]	=
-			this flattenMapEvents ev
+			this flatMapEvents ev
 		
 	// monad to Cell
 	
