@@ -14,7 +14,7 @@ object Partial {
 	
 	def masterDetail[S,T](s:Signal[S], l:Signal[Option[Lens[S,T]]], d:T):Partial[S,T]	= new MasterPartial[S,T] {
 		val master:Signal[S]					= s
-		val get:Signal[T]						= signal { l.current cata (_ get s.current, d) }
+		val get:Signal[T]						= signal { l.current cataSwapped (_ get s.current, d) }
 		def putter(t:Events[T]):Events[S=>S]	= t snapshotWith l collect { case (t,Some(l)) => l putter t }
 	}
 }

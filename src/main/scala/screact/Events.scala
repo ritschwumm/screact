@@ -5,6 +5,19 @@ import scutil.Implicits._
 
 // AKA Publisher
 
+object Events {
+	// (in foldLeft never[T]) { _ orElse _ }
+	def multiOrElse[T](in:Seq[Events[T]]):Events[T]	=
+			events {
+				in flatMap { _.message } headOption;
+			}
+			
+	def multiOccurs[T](in:Seq[Events[T]]):Events[Seq[T]]	=
+			events {
+				in flatMap { _.message } guardBy { _.nonEmpty }
+			}
+}
+
 /** a Reactive without a (useful) current value just emitting events */
 trait Events[+T] extends Reactive[Unit,T] { 
 	private[screact] val cur:Unit	= ()
