@@ -27,5 +27,5 @@ trait Partial[S,T] {
 
 private trait MasterPartial[S,T] extends Partial[S,T] {
 	def master:Signal[S]
-	final def put(t:Events[T]):Events[S]	= putter(t) snapshotWith master map { case (f,s) => f(s) }
+	final def put(t:Events[T]):Events[S]	= putter(t) snapshotWith master map { _.apply1to2 }
 }

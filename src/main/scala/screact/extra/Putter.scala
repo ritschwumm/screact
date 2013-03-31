@@ -1,17 +1,22 @@
 package screact.extra
 
+import scutil.Implicits._
+
 import screact._
 
 object Putter {
-	def onMany[T](value:Signal[T], putters:Iterable[Events[T=>T]]):Events[T]	=
+	def multiOn[T](value:Signal[T], putters:Iterable[Events[T=>T]]):Events[T]	=
 			on(value, sum(putters))
 		
 	// TODO looks like MasterPartial#put
 	def on[T](value:Signal[T], puts:Events[T=>T]):Events[T]	=
-			puts snapshotWith value map { case (f,v) => f(v) } 
+			puts snapshotWith value map {_ .apply1to2 }
 	
 	//------------------------------------------------------------------------------
-	//## Events[T=>T] and never[T=>T] form a monoid similar to T=>T and identity
+	
+	// T=>T with identity forms a monoid and
+	// orElse with never forms a monoid so
+	// Events[T=>T] with never[T=>T] forms a monoid, too
 	
 	def zero[T]:Events[T=>T]	= never[T=>T]
 		

@@ -51,11 +51,6 @@ trait Events[+T] extends Reactive[Unit,T] {
 		
 	final def filterNot(func:Predicate[T]):Events[T]	= 
 			events { message filter !func }
-			// events { message collect { case it if func(it) => it } }
-			
-	final def when(func: =>Boolean):Events[T]	= 
-			this filter { _ => func }
-			// events { message filter { _ => func } }
 			
 	final def collect[U](func:PartialFunction[T,U]):Events[U]	= 
 			events { message collect func }
@@ -63,8 +58,8 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def filterMap[U](func:T=>Option[U]):Events[U] =
 			this map func collect { case Some(value) => value }
 		
-	// final def filterMap[U](implicit ev:T=>Option[U]):Events[U] =
-	// 		this map witness collect { case Some(value) => value }
+	final def filterOption[U](implicit ev:T=>Option[U]):Events[U] =
+			this filterMap ev
 		
 	// functor
 	
@@ -94,6 +89,17 @@ trait Events[+T] extends Reactive[Unit,T] {
 				thisMessage orElse thatMessage 
 			}
 	}
+	
+	// special filters
+	
+	final def when(func: =>Boolean):Events[T]	= 
+			this filter { _ => func }
+	
+	final def trueUnit(implicit ev:T=>Boolean):Events[Unit]	=
+			this collect { case true => () }
+		
+	final def falseUnit(implicit ev:T=>Boolean):Events[Unit]	=
+			this collect { case false => () }
 	
 	// snapshotting
 	
