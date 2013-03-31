@@ -4,7 +4,7 @@ import scala.collection.mutable
 
 import scutil.lang._
 import scutil.Implicits._
-import scutil.log.Logging
+import scutil.log._
 
 import screact.Updates._
 

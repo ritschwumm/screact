@@ -21,9 +21,8 @@ object SwingWork {
 	def asyncException[T](in:Events[Thunk[T]])(implicit observing:Observing):Events[Tried[Exception,T]]	=
 			emitter[Tried[Exception,T]] doto { out =>
 				in observe { input =>
-					// TODO use swingWorkerException when it becomes available
-					swingWorker[Tried[Exception,T]](
-						thunk { Tried exceptionCatch input() },
+					swingWorkerException[T](
+						input,
 						out.emit
 					)
 				}
