@@ -33,18 +33,11 @@ class Engine extends Logging {
 	// true within an update cycle
 	private var updating	= false
 	
+	// NOTE could schedule multiple first-entry nodes
 	private[screact] def schedule(node:Scheduled) {
 		external	+= node
 		scheduleLoop()
 	}
-	
-	/*
-	// TODO what if this is called while we are already scheduled?
-	private def scheduleMany(nodes:Iterable[Scheduled]) {
-		external	++= nodes
-		scheduleLoop()
-	}
-	*/
 	
 	// delayed and new external events are immediately re-scheduled
 	private def scheduleLoop() {
@@ -100,15 +93,10 @@ class Engine extends Logging {
 		val	doneSize	= done.size
 		done.clear()
 		
-		// TODO ugly hack to get rid of WeakReferences
+		// NOTE ugly hack to get rid of WeakReferences
 		if (doneSize > 10) {
 			sinksCache.gc()
 		}
-		/*
-		if (doneSize > 100) {
-			System.gc()
-		}
-		*/
 	}
 
 	//------------------------------------------------------------------------------
@@ -145,7 +133,7 @@ class Engine extends Logging {
 		"com.sun."
 	)
 		
-	// BETTER usa a macro
+	// BETTER use something like scutil.SourceLocation
 	def clientCall:Option[StackTraceElement] =
 			Thread.currentThread.getStackTrace find { it => clientClass(it.getClassName) }
 		

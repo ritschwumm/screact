@@ -65,7 +65,7 @@ object SwingWidget {
 			val	first	= delayed.isEmpty
 			delayed		= Some(value)
 			if (first) {
-				// TODO use the Domain to schedule
+				// TODO use the (Swing-)Domain to schedule
 				edt {
 					engine schedule thunk { 
 						msg		= delayed

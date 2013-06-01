@@ -20,7 +20,7 @@ final object NoSinks extends Sinks {
 }
 
 private final class HasSinks(cache:SinksCache) extends Sinks {
-	// BETTER check if a LongMap makes sense here
+	// BETTER check whether a LongMap makes sense here
 	private val ids	= new mutable.HashSet[Long]
 	
 	def all:Set[Node]	= ids flatMap cache.lookup toSet;

@@ -8,7 +8,7 @@ object Putter {
 	def multiOn[T](value:Signal[T], putters:Iterable[Events[T=>T]]):Events[T]	=
 			on(value, sum(putters))
 		
-	// TODO looks like MasterPartial#put
+	// TODO looks suspiciously like MasterPartial#put
 	def on[T](value:Signal[T], puts:Events[T=>T]):Events[T]	=
 			puts snapshotWith value map {_ .apply1to2 }
 	

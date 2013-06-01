@@ -162,35 +162,6 @@ trait Events[+T] extends Reactive[Unit,T] {
 				events { message filter !func }
 			)
 	
-	/*
-	// NOTE just shifting one back is stupid. i need "immediately after"! 
-	//* emits the previously emitted event of the source
-	final def delay:Events[T] = {
-		var	previous:Option[T]	= None
-		events {
-			val	out	= previous
-			if (message.isDefined)	{ previous	= message; out }
-			else					None
-		}
-	}
-	*/
-	
-	/*
-	// slide = delay pair this
-	// aka zipTail
-	final def slide:Events[(T,T)] = {
-		var previous:Option[T]	= None
-		events {
-			val	previousOld	= previous
-			if (message.isDefined)							previous	= message
-			if (message.isDefined && previousOld.isDefined)	Some((previousOld.get,message.get))
-			else											None
-		}
-	}
-	
-	// TODO add stateful combinator?
-	*/
-			
 	/** take the first count events, drop the rest */
 	final def take(count:Int):Events[T]	= {
 		var	todo	= count

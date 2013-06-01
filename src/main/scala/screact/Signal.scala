@@ -8,7 +8,18 @@ trait Signal[+T] extends Reactive[T,T] {
 	
 	final def changes:Events[T]	= 
 			events { message }
-		
+	
+	/** value before a change occured, like slide but throwing away the current value */
+	final def previous:Events[T]	= {
+		var	previous	= current
+		changes map { next =>
+			val	out		= previous
+			previous	= next
+			out
+		}
+	}
+	
+	/** apply a function to previous and current value on change */	
 	final def slide[U](func:(T,T)=>U):Events[U] = {
 		var	previous	= current
 		changes map { next =>

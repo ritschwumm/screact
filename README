@@ -17,6 +17,3 @@ features
 -	simple signal DSL
 -	easy to integrate with swing
 -	no compiler plugin needed
-
-misfeatures
--	cannot be used from multiple threads at the moment
