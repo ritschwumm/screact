@@ -4,7 +4,7 @@ import scutil.gui.SwingUtil._
 
 import screact._
 
-final class SwingSignalExt[T](delegate:Signal[T]) extends EdtHelper {
+final class SwingSignalExt[T](delegate:Signal[T]) extends EdtReactive {
 	/** ensure current is called inside the EDT */
-	def currentInEdt:T	= doInEdt { decouple { delegate.current } }
+	def currentInEdt:T	= readInEdt { decouple { delegate.current } }
 }

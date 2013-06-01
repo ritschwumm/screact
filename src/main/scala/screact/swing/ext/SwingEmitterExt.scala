@@ -4,7 +4,7 @@ import scutil.gui.SwingUtil._
 
 import screact._
 
-final class SwingEmitterExt[T](delegate:Emitter[T]) extends EdtHelper {
+final class SwingEmitterExt[T](delegate:Emitter[T]) extends EdtReactive {
 	/** ensure emit is called inside the EDT */
-	def emitInEdt(value:T):Unit	= doInEdt { delegate emit value }
+	def emitInEdt(value:T):Unit	= writeInEdt { delegate emit value }
 }
