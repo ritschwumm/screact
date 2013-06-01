@@ -1,5 +1,6 @@
 package screact
 
+/** Signal depending on other Signals */
 private final class CalculationSignal[T](next: =>T) extends Signal[T] {
 	var	cur:T			= _
 	var msg:Option[T]	= None

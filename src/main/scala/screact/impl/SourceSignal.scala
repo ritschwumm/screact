@@ -3,6 +3,7 @@ package screact
 import scutil.lang._
 import scutil.log._
 
+/** root of a propagation tree */
 private [screact] class SourceSignal[T](initial:T) extends Signal[T] with Logging { outer =>
 	var cur:T			= initial
 	var msg:Option[T]	= None
@@ -35,11 +36,13 @@ private [screact] class SourceSignal[T](initial:T) extends Signal[T] with Loggin
 		}
 	}
 	
-	def calculate() {}	// msg does not change in here
+	// msg does not change in here
+	def calculate() {}
 	
 	def reset() {
 		msg	= None
 	}
 	
-	// init()			// not necessary, we don't have dependencies
+	// not necessary, we don't have dependencies
+	// init()
 }

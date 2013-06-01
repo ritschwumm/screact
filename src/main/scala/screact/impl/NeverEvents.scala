@@ -1,9 +1,15 @@
 package screact
 
-// NOTE never notifies any dependents
+/** an Events never emitting anything */
 private final class NeverEvents[T] extends Events[T] {
-	val	msg:Option[T]	= None
+	val msg:Option[T]	= None
+	
+	// msg does not change in here
 	def calculate() {}
-	def reset() 	{}	// msg stays None anyway
-	// init()			// not necessary, we don't have dependencies
+	
+	// msg stays None anyway
+	def reset() {}
+	
+	// not necessary, we don't have dependencies
+	// init()
 }  

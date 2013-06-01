@@ -1,26 +1,27 @@
 package screact.extra
 
+import scutil.lang._
 import scutil.Implicits._
 
 import screact._
 
 object Putter {
-	def multiOn[T](value:Signal[T], putters:Iterable[Events[T=>T]]):Events[T]	=
+	def multiOn[T](value:Signal[T], putters:Iterable[Events[Endo[T]]]):Events[T]	=
 			on(value, sum(putters))
 		
 	// TODO looks suspiciously like MasterPartial#put
-	def on[T](value:Signal[T], puts:Events[T=>T]):Events[T]	=
+	def on[T](value:Signal[T], puts:Events[Endo[T]]):Events[T]	=
 			puts snapshotWith value map {_ .apply1to2 }
 	
 	//------------------------------------------------------------------------------
 	
-	// T=>T with identity forms a monoid and
+	// Endo[T] with identity forms a monoid and
 	// orElse with never forms a monoid so
-	// Events[T=>T] with never[T=>T] forms a monoid, too
+	// Events[Endo[T]] with never[Endo[T]] forms a monoid, too
 	
-	def zero[T]:Events[T=>T]	= never[T=>T]
+	def zero[T]:Events[Endo[T]]	= never[Endo[T]]
 		
-	def append[T](a:Events[T=>T], b:Events[T=>T]):Events[T=>T]	= 
+	def append[T](a:Events[Endo[T]], b:Events[Endo[T]]):Events[Endo[T]]	= 
 			events {
 				(a.message, b.message) match {
 					case (Some(a),Some(b))	=> Some(a andThen b)
@@ -30,6 +31,6 @@ object Putter {
 				}
 			}
 			
-	def sum[T](in:Iterable[Events[T=>T]]):Events[T=>T]	=
+	def sum[T](in:Iterable[Events[Endo[T]]]):Events[Endo[T]]	=
 			(in foldLeft zero[T])(append)
 }

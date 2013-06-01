@@ -55,6 +55,7 @@ class Engine extends Logging {
 			updateCycle(internal)
 		}
 		catch { case e:Exception => 
+			// TODO move this into the Domain
 			ERROR(e) 
 		}
 		finally {

@@ -25,6 +25,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 	// convert to Signal
 	
 	final def hold[U>:T](initial:U):Signal[U]	= {
+		// TODO must not be stateful, rank mismatch re-evaluation might occur
 		var value	= initial
 		signal {
 			message foreach { msgval => 
@@ -35,6 +36,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 	}
 	
 	final def scan[U](initial:U)(func:(U,T)=>U):Signal[U]	= {
+		// TODO must not be stateful, rank mismatch re-evaluation might occur
 		var value	= initial
 		signal {
 			message foreach { msgval => 
@@ -164,6 +166,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 	
 	/** take the first count events, drop the rest */
 	final def take(count:Int):Events[T]	= {
+		// TODO must not be stateful, rank mismatch re-evaluation might occur
 		var	todo	= count
 		events {
 			if (todo != 0) {
@@ -178,6 +181,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 	
 	/** drop the first count events, take the rest */
 	final def drop(count:Int):Events[T] = {
+		// TODO must not be stateful, rank mismatch re-evaluation might occur
 		var	todo	= count
 		events {
 			// need to access message every time to avoid loss of connection

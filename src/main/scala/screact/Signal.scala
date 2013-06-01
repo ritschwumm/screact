@@ -11,6 +11,7 @@ trait Signal[+T] extends Reactive[T,T] {
 	
 	/** value before a change occured, like slide but throwing away the current value */
 	final def previous:Events[T]	= {
+		// TODO must not be stateful, rank mismatch re-evaluation might occur
 		var	previous	= current
 		changes map { next =>
 			val	out		= previous
@@ -21,6 +22,7 @@ trait Signal[+T] extends Reactive[T,T] {
 	
 	/** apply a function to previous and current value on change */	
 	final def slide[U](func:(T,T)=>U):Events[U] = {
+		// TODO must not be stateful, rank mismatch re-evaluation might occur
 		var	previous	= current
 		changes map { next =>
 			val	out		= func(previous, next)

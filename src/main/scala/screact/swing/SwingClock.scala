@@ -7,6 +7,7 @@ import java.util.Timer
 import java.util.TimerTask
 
 import scutil.lang._
+import scutil.Implicits._
 import scutil.gui.SwingUtil._
 import scutil.time._
 
@@ -54,9 +55,7 @@ object SwingClock {
 		}
 	}
 	
-	// BETTER take a Signal[Option[T]] instead of an Events[Option[T]]?
 	def repeat[T](cycle:Duration, delay:Duration, input:Events[Option[T]]):Events[T] =
-			input flatMap {
-				_ map { it => once(it) orElse (SwingClock(cycle, delay) tag it) } getOrElse never
-			}
+			input.filterOption orElse 
+			(input flatMap { _ cata (never, SwingClock(cycle, delay) tag _) })
 }

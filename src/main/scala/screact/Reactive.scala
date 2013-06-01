@@ -16,7 +16,7 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 	private var disposedFlag	= false
 	
 	// Nodes this Reactive reads from
-	// NOTE without this keeping string refs to the source Nodes we loose connections
+	// NOTE without keeping strong references to the source Nodes like this we loose connections
 	private var sources	= mutable.ArrayBuffer[Node]()
 	
 	// Nodes reading data from this Reactive
