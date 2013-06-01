@@ -3,8 +3,6 @@ package screact
 import scutil.lang._
 import scutil.log._
 
-// BETTER aggregate logging
-
 private [screact] class SourceEvents[T] extends Events[T] with Logging { outer =>
 	var	msg:Option[T]	= None
 	
@@ -19,6 +17,7 @@ private [screact] class SourceEvents[T] extends Events[T] with Logging { outer =
 			Some(outer)
 		}
 		else {
+			// TODO move this into the Domain
 			ERROR(
 					"cannot emit an event twice within the same update cycle", 
 					origin, 

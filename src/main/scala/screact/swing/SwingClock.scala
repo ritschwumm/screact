@@ -1,4 +1,4 @@
-package screact.extra
+package screact.swing
 
 import java.lang.ref.WeakReference
 import java.awt.event.ActionEvent

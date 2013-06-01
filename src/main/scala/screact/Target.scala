@@ -3,10 +3,6 @@ package screact
 import scutil.lang._
 import scutil.log._
 
-import screact.Updates._
-
-// BETTER aggregate logging
-
 /** A final target for events emitted by an Event. Targets always get notified after all other Nodes. */
 private final class Target[T](effect:Effect[T], source:Reactive[_,T]) extends Node with Disposable with Logging {
 	def sinks	= NoSinks
@@ -18,6 +14,7 @@ private final class Target[T](effect:Effect[T], source:Reactive[_,T]) extends No
 		}
 		catch { 
 			case e:Exception	=>
+				// TODO move this into the Domain
 				ERROR("update failed", this, e)
 		}
 		Unchanged

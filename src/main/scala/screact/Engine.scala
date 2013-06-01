@@ -6,8 +6,6 @@ import scutil.lang._
 import scutil.Implicits._
 import scutil.log._
 
-import screact.Updates._
-
 /** managed one Engine per Thread */
 object Engine {
 	private val	threadLocal	= new ThreadLocal[Engine]
@@ -116,8 +114,10 @@ class Engine extends Logging {
 	//------------------------------------------------------------------------------
 	//## dependency callbacks
 	
+	// dynamic variable
 	private var	readCallbacks	= mutable.Stack.empty[Effect[Node]]
 	
+	// used in decoupled calculations
 	private [screact] def withoutReader[T](block: =>T):T	=
 			withReader((_:Node) => ())(block)
 		
@@ -145,6 +145,7 @@ class Engine extends Logging {
 		"com.sun."
 	)
 		
+	// BETTER usa a macro
 	def clientCall:Option[StackTraceElement] =
 			Thread.currentThread.getStackTrace find { it => clientClass(it.getClassName) }
 		

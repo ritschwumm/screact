@@ -5,14 +5,12 @@ import scala.collection.mutable
 import scutil.lang._
 import scutil.log._
 
-import screact.Updates._
-
-// BETTER aggregate logging
-
 /** base trait for reactive values with some current value (may be Unit) and emitting events. */
 trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging { 
 	private[screact] final var rank:Int	= 0
+	// current value, usable outside an update cycle
 	private[screact] def cur:Cur
+	// current message sent to dependent nodes, always None outside an update cycle
 	private[screact] def msg:Option[Msg]
 	
 	private var disposedFlag	= false
@@ -45,13 +43,12 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 		val	oldRank	= rank
 		rank	= 0
 		
-		// just to keep references during this update cycle
+		// just to keep sources alive during this update cycle
 		val oldSources	= sources
 		// NOTE i'm already in the queue, so even if i get reranked this will not affect whether i'm scheduled or not
-		sources foreach { _.sinks remove this }
-		sources.clear()
+		removeSelfFromSources()
 		
-		// called when calculate reads a source
+		// called when a dependent node reads us from inside calculate
 		def readCallback(source:Node) {
 			val	sourceRank	= source.rank
 			if (sourceRank >= rank) {
@@ -77,6 +74,7 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 				case RankMismatch	=>
 					false
 				case e:Exception	=>
+					// TODO move this into the Domain
 					ERROR("calculate failed", this, e)
 					true
 			}
@@ -103,10 +101,15 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 	final def disposed:Boolean	= disposedFlag
 	
 	final def dispose() {
+		if (engine != Engine.access)	throw WrongThreadException
 		disposedFlag	= true
-		sources foreach { _.sinks remove this }
 		sources.clear()
 		sinks.clear()
+	}
+	
+	private def removeSelfFromSources() {
+		sources foreach { _.sinks remove this }
+		sources.clear()
 	}
 	
 	//------------------------------------------------------------------------------

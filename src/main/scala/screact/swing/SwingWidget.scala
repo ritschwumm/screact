@@ -1,9 +1,10 @@
-package screact.extra
+package screact.swing
 
 import scutil.lang._
 import scutil.gui.SwingUtil._
 
 import screact._
+import screact.extra.Blocker
 
 /** used to connect Swing widgets to the reactive world */ 
 object SwingWidget {
@@ -64,7 +65,7 @@ object SwingWidget {
 			val	first	= delayed.isEmpty
 			delayed		= Some(value)
 			if (first) {
-				// TODO use the Domain in to schedule
+				// TODO use the Domain to schedule
 				edt {
 					engine schedule thunk { 
 						msg		= delayed

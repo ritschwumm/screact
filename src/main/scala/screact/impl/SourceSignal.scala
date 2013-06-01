@@ -3,8 +3,6 @@ package screact
 import scutil.lang._
 import scutil.log._
 
-// BETTER aggregate logging
-
 private [screact] class SourceSignal[T](initial:T) extends Signal[T] with Logging { outer =>
 	var cur:T			= initial
 	var msg:Option[T]	= None
@@ -22,6 +20,7 @@ private [screact] class SourceSignal[T](initial:T) extends Signal[T] with Loggin
 				Some(outer)
 			}
 			else {
+				// TODO move this into the Domain
 				ERROR(
 						"cannot set a signal twice within the same update cycle",
 						origin,

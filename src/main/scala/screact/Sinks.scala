@@ -19,6 +19,25 @@ final object NoSinks extends Sinks {
 	def clear() {}
 }
 
+private final class HasSinks(cache:SinksCache) extends Sinks {
+	// BETTER check if a LongMap makes sense here
+	private val ids	= new mutable.HashSet[Long]
+	
+	def all:Set[Node]	= ids flatMap cache.lookup toSet;
+	
+	def add(node:Node) {
+		ids	+= node.id
+	}
+	
+	def remove(node:Node) {
+		ids	-= node.id
+	}
+	
+	def clear() {
+		ids.clear()
+	}
+}
+
 /** saves weak references by only keeping one per node */
 private class SinksCache {
 	var	nodes	= immutable.LongMap.empty[WeakReference[Node]]
@@ -37,24 +56,5 @@ private class SinksCache {
 	
 	def gc() {
 		nodes	= nodes filterNot { _._2.get == null }
-	}
-}
-
-private final class HasSinks(cache:SinksCache) extends Sinks {
-	// TODO maybe use a LongMap instead
-	private val ids	= new mutable.HashSet[Long]
-	
-	def all:Set[Node]	= ids flatMap cache.lookup toSet;
-	
-	def add(node:Node) {
-		ids	+= node.id
-	}
-	
-	def remove(node:Node) {
-		ids	-= node.id
-	}
-	
-	def clear() {
-		ids.clear()
 	}
 }

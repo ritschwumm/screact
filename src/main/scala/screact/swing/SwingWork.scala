@@ -1,4 +1,4 @@
-package screact.extra
+package screact.swing
 
 import scutil.lang._
 import scutil.Implicits._
