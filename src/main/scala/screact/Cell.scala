@@ -1,6 +1,7 @@
 package screact
 
 import scutil.lang._
+import scutil.lens._
 
 object Cell {
 	implicit def asSignal[T](it:Cell[T]):Signal[T]	= it.signal
@@ -21,7 +22,7 @@ trait Cell[T] extends Disposable { outer =>
 		override def dispose()	{ signal.dispose() }
 	}
 	
-	final def view[U](lens:Lens[T,U]):Cell[U]	= new Cell[U] {
+	final def view[U](lens:TLens[T,U]):Cell[U]	= new Cell[U] {
 		val signal		= outer.signal map lens.get
 		def set(it:U) 	{ outer modify (lens put (_, it)) }
 		override def dispose()	{ signal.dispose() }
