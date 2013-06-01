@@ -11,7 +11,7 @@ object Putter {
 		
 	// TODO looks suspiciously like MasterPartial#put
 	def on[T](value:Signal[T], puts:Events[Endo[T]]):Events[T]	=
-			puts snapshotWith value map {_ .apply1to2 }
+			(puts snapshotWith value) { _(_) }
 	
 	//------------------------------------------------------------------------------
 	

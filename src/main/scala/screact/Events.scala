@@ -92,8 +92,11 @@ trait Events[+T] extends Reactive[Unit,T] {
 			}
 	}
 	
-	// special filters
+	// combine with values
 	
+	final def tag[U](that: =>U):Events[U]	=
+			this map { _ => that }
+		
 	final def when(func: =>Boolean):Events[T]	= 
 			this filter { _ => func }
 	
@@ -103,24 +106,18 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def falseUnit(implicit ev:T=>Boolean):Events[Unit]	=
 			this collect { case false => () }
 	
-	// snapshotting
+	// combine with signals
+		
+	final def snapshot[U](that:Signal[U]):Events[(T,U)]	=
+			snapshotWith(that) { (_,_) }
 	
-	final def tag[U](that: =>U):Events[U]	=
-			this map { _ => that }
-		
-	final def tagWith[U](that: =>U):Events[(T,U)]	=
-			this map { (_, that) }
-		
-	final def snapshot[U](that:Signal[U]):Events[U]	= events {
+	final def snapshotOnly[U](that:Signal[U]):Events[U]	=
+			snapshotWith(that) { (_, it) => it }
+	
+	final def snapshotWith[U,V](that:Signal[U])(func:(T,U)=>V):Events[V]	= events {
 		val when	= this.message
 		val what	= that.current
-		when map { _ => what }
-	}    
-	
-	final def snapshotWith[U](that:Signal[U]):Events[(T,U)]	= events {
-		val when	= this.message
-		val what	= that.current
-		when map { (_, what) }
+		when map { it => func(it, what) }
 	}
 	
 	final def gate(that:Signal[Boolean]):Events[T]	= events {
@@ -141,12 +138,19 @@ trait Events[+T] extends Reactive[Unit,T] {
 	// other
 	
 	/** emits an event if both inputs fire at the same instant */
-	final def zip[U](that:Events[U]):Events[(T,U)] = events {
+	final def zip[U](that:Events[U]):Events[(T,U)] =
+			zipWith(that) { (_,_) }
+	
+	/** emits an event if both inputs fire at the same instant */
+	final def zipWith[U,V](that:Events[U])(func:(T,U)=>V):Events[V]	= events {
 		(this.message, that.message) match {
-			case (Some(thisMessage),Some(thatMessage))	=> Some((thisMessage, thatMessage))
+			case (Some(thisMessage),Some(thatMessage))	=> Some(func(thisMessage, thatMessage))
 			case _										=> None
 		}
 	}
+	
+	final def zipBy[U](func:T=>U):Events[(T,U)]	=
+			this map { it => (it,func(it)) }
 	
 	final def unzip[U,V](implicit ev:T=>(U,V)):(Events[U],Events[V])	=
 			(map(_._1), map(_._2))
