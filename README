@@ -1,19 +1,19 @@
 A simple reactive programming library.
 
 To build this code, get and install SBT from 
-	https://github.com/sbt/sbt
+    https://github.com/sbt/sbt
 
 Get and install these library/libraries before building:
-	https://github.com/ritschwumm/scutil
+    https://github.com/ritschwumm/scutil
 
 Use these commands to build:
-	git clone git@github.com:ritschwumm/screact.git
-	cd screact
-	sbt publish-local
-	
+    git clone git@github.com:ritschwumm/screact.git
+    cd screact
+    sbt publish-local
+    
 features
--	glitch protection: signals and events never see stale values
--	extensive set of combinators
--	simple signal DSL
--	easy to integrate with swing
--	no compiler plugin needed
+-   glitch protection: signals and events never see stale values
+-   extensive set of combinators
+-   simple signal DSL
+-   easy to integrate with swing
+-   no compiler plugin needed
