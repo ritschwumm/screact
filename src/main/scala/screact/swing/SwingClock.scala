@@ -17,7 +17,7 @@ import screact._
 object SwingClock {
 	private val timer	= new Timer(true)
 	
-	def apply(cycle:Duration):Events[Instant] = apply(cycle, cycle)
+	def apply(cycle:MilliDuration):Events[MilliInstant] = apply(cycle, cycle)
 	
 	/*
 	NOTE this doesn't work as desired if there are any hard references to output.events left:
@@ -27,10 +27,10 @@ object SwingClock {
 	-	scala keeps hard references to objects (as opposed to vals).
 		nulling a reference from an object to an Events object helps.
 	*/
-	def apply(cycle:Duration, delay:Duration):Events[Instant] = {
+	def apply(cycle:MilliDuration, delay:MilliDuration):Events[MilliInstant] = {
 		require(insideEDT, "SwingClock may not be constructed outside the EDT")
 		
-		val output		= new SourceEvents[Instant]
+		val output		= new SourceEvents[MilliInstant]
 		val outputRef	= new WeakReference(output)
 		
 		val task	= new MyTimerTask(outputRef)
@@ -39,13 +39,13 @@ object SwingClock {
 		output
 	}
 	
-	private class MyTimerTask(outputRef:WeakReference[SourceEvents[Instant]]) extends TimerTask {
+	private class MyTimerTask(outputRef:WeakReference[SourceEvents[MilliInstant]]) extends TimerTask {
 		def run() {
 			val alive	= edtWait {
 				val output	= outputRef.get
 				val alive	= output != null && !output.disposed
 				if (alive) {
-					output emit Instant.now
+					output emit MilliInstant.now
 				}
 				alive
 			}
@@ -55,7 +55,7 @@ object SwingClock {
 		}
 	}
 	
-	def repeat[T](cycle:Duration, delay:Duration, input:Events[Option[T]]):Events[T] =
+	def repeat[T](cycle:MilliDuration, delay:MilliDuration, input:Events[Option[T]]):Events[T] =
 			input.filterOption orElse 
 			(input flatMap { _ cata (never, SwingClock(cycle, delay) tag _) })
 }

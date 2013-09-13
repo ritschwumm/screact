@@ -3,7 +3,6 @@ package screact.swing
 import scutil.lang._
 import scutil.Implicits._
 import scutil.gui.SwingUtil._
-import scutil.tried._
 
 import screact._
 
