@@ -24,8 +24,12 @@ trait Events[+T] extends Reactive[Unit,T] {
 	
 	// convert to Signal
 	
+	// TODO state
+	// if a rank mismatch can cause re-evalutation,
+	// then hold and scan must not be stateful.
+	
+	/** the initial value at start and the last event's value afterwards */
 	final def hold[U>:T](initial:U):Signal[U]	= {
-		// TODO must not be stateful, rank mismatch re-evaluation might occur
 		var value	= initial
 		signal {
 			message foreach { msgval => 
@@ -35,14 +39,31 @@ trait Events[+T] extends Reactive[Unit,T] {
 		}
 	}
 	
+	/** like hold, but with access to the previous value */
 	final def scan[U](initial:U)(func:(U,T)=>U):Signal[U]	= {
-		// TODO must not be stateful, rank mismatch re-evaluation might occur
 		var value	= initial
 		signal {
 			message foreach { msgval => 
 				value = func(value, msgval) 
 			}
 			value
+		}
+	}
+	
+	// stateful events
+	
+	/** take state and message, produce new state an output */
+	final def stateful[S,U](initial:S)(func:(S,T)=>(S,U)):Events[U]	= {
+		var state	= initial
+		events {
+			message match {
+				case Some(msgval)	=>
+					val (newState, out)	= func(state, msgval)
+					state	= newState
+					Some(out)
+				case None	=>
+					None
+			}
 		}
 	}
 	
@@ -68,7 +89,21 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def map[U](func:T=>U):Events[U]	= 
 			events { message map func }
 	
-	// TODO applicative functor: ap/pa
+	// applicative functor
+	
+	final def ap[U,V](source:Events[U])(implicit ev:T=>U=>V):Events[V]	= 
+			for {
+				func	<- this map ev
+				arg		<- source
+			}
+			yield func(arg)
+	
+	final def pa[U](func:Events[T=>U]):Events[U]	= 
+			for {
+				func	<- func
+				arg		<- this
+			}
+			yield func(arg)
 	
 	// monad
 	
@@ -80,17 +115,18 @@ trait Events[+T] extends Reactive[Unit,T] {
 		
 	// monoid with never
 	
-	final def orElse[U>:T](that:Events[U]):Events[U]	=  (this,that) match {
-		case (_,_:NeverEvents[_])	=> this
-		case (_:NeverEvents[_],_)	=> that
-		case _ =>
-			events {
-				// NOTE needs to access both message methods or registration fails!
-				val thisMessage	= this.message
-				val thatMessage	= that.message
-				thisMessage orElse thatMessage 
+	final def orElse[U>:T](that:Events[U]):Events[U]	= 
+			(this,that) match {
+				case (_,_:NeverEvents[_])	=> this
+				case (_:NeverEvents[_],_)	=> that
+				case _ =>
+					events {
+						// NOTE needs to access both message methods or registration fails!
+						val thisMessage	= this.message
+						val thatMessage	= that.message
+						thisMessage orElse thatMessage 
+					}
 			}
-	}
 	
 	// combine with values
 	
@@ -114,17 +150,19 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def snapshotOnly[U](that:Signal[U]):Events[U]	=
 			snapshotWith(that) { (_, it) => it }
 	
-	final def snapshotWith[U,V](that:Signal[U])(func:(T,U)=>V):Events[V]	= events {
-		val when	= this.message
-		val what	= that.current
-		when map { it => func(it, what) }
-	}
+	final def snapshotWith[U,V](that:Signal[U])(func:(T,U)=>V):Events[V]	= 
+			events {
+				val when	= this.message
+				val what	= that.current
+				when map { it => func(it, what) }
+			}
 	
-	final def gate(that:Signal[Boolean]):Events[T]	= events {
-		val when	= this.message
-		val gate	= that.current
-		when filter { _ => gate }
-	}
+	final def gate(that:Signal[Boolean]):Events[T]	= 
+			events {
+				val when	= this.message
+				val gate	= that.current
+				when filter { _ => gate }
+			}
 	
 	// delayable
 	
@@ -142,12 +180,13 @@ trait Events[+T] extends Reactive[Unit,T] {
 			zipWith(that) { (_,_) }
 	
 	/** emits an event if both inputs fire at the same instant */
-	final def zipWith[U,V](that:Events[U])(func:(T,U)=>V):Events[V]	= events {
-		(this.message, that.message) match {
-			case (Some(thisMessage),Some(thatMessage))	=> Some(func(thisMessage, thatMessage))
-			case _										=> None
-		}
-	}
+	final def zipWith[U,V](that:Events[U])(func:(T,U)=>V):Events[V]	= 
+			events {
+				(this.message, that.message) match {
+					case (Some(thisMessage),Some(thatMessage))	=> Some(func(thisMessage, thatMessage))
+					case _										=> None
+				}
+			}
 	
 	final def zipBy[U](func:T=>U):Events[(T,U)]	=
 			this map { it => (it,func(it)) }

@@ -20,6 +20,9 @@ private final class Target[T](effect:Effect[T], source:Reactive[_,T]) extends No
 		Unchanged
 	}
 	
+	// TODO deal with overflows
+	private [screact] def pushDown(rank:Int) {}
+	
 	def reset() {}
 	
 	def dispose() {

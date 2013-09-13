@@ -12,7 +12,7 @@ extend this trait.
 trait Observing {
 	implicit protected val observing	= this
 	
-	// keeps hard references
+	/** keeps hard references */
 	private val connections	= new mutable.ArrayBuffer[Disposable]
 	
 	// used in Reactive and Signal

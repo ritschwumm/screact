@@ -6,7 +6,7 @@ import scutil.lang._
 import scutil.Implicits._
 import scutil.log._
 
-/** managed one Engine per Thread */
+/** manages one Engine per Thread */
 object Engine {
 	private val	threadLocal	= new ThreadLocal[Engine]
 	
@@ -21,7 +21,7 @@ object Engine {
 }
 
 /** this is the main workhorse which schedules all activities on Reactive Nodes */
-class Engine extends Logging {
+final class Engine extends Logging {
 	private[screact] val sinksCache	= new SinksCache
 	
 	//------------------------------------------------------------------------------
@@ -76,7 +76,7 @@ class Engine extends Logging {
 			if (!(done contains head)) {
 				head.update() match {
 					case Changed	=>
-						// value has changed, unschedule the head and schedule the head node's dependencies
+						// value has changed, unschedule the head node and schedule the head node's dependencies
 						queue insertMany head.sinks.all
 						done	+= head
 					case Unchanged	=>
@@ -138,6 +138,6 @@ class Engine extends Logging {
 	def clientCall:Option[StackTraceElement] =
 			Thread.currentThread.getStackTrace find { it => clientClass(it.getClassName) }
 		
-	def clientClass(name:String):Boolean	= 
+	private def clientClass(name:String):Boolean	= 
 			!(ignoredPrefixes exists { name startsWith _ })
 }

@@ -8,18 +8,18 @@ import scutil.log._
 /** base trait for reactive values with some current value (may be Unit) and emitting events. */
 trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging { 
 	private[screact] final var rank:Int	= 0
-	// current value, usable outside an update cycle
+	/** current value, usable outside an update cycle */
 	private[screact] def cur:Cur
-	// current message sent to dependent nodes, always None outside an update cycle
+	/** current message sent to dependent nodes, always None outside an update cycle */
 	private[screact] def msg:Option[Msg]
 	
 	private var disposedFlag	= false
 	
-	// Nodes this Reactive reads from
 	// NOTE without keeping strong references to the source Nodes like this we loose connections
+	/** Nodes this Reactive reads from */
 	private var sources	= mutable.ArrayBuffer[Node]()
 	
-	// Nodes reading data from this Reactive
+	/** Nodes reading data from this Reactive */
 	private[screact] val sinks	= new HasSinks(engine.sinksCache)
 	
 	private[screact] final def update():Update = {
@@ -38,7 +38,7 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 		updateInternal(false)
 	}
 	
-	// returns true on ok, false on rank mismatch
+	/** returns true on ok, false on rank mismatch */
 	private def updateInternal(checkRank:Boolean):Boolean = {
 		val	oldRank	= rank
 		rank	= 0
@@ -48,7 +48,11 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 		// NOTE i'm already in the queue, so even if i get reranked this will not affect whether i'm scheduled or not
 		removeSelfFromSources()
 		
-		// called when a dependent node reads us from inside calculate
+		/**
+		called back from the parent when we read it so
+		we can notify it about us depending on it
+		and update our rank
+		*/
 		def readCallback(source:Node) {
 			val	sourceRank	= source.rank
 			if (sourceRank >= rank) {
@@ -72,6 +76,7 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 			}
 			catch { 
 				case RankMismatch	=>
+					pushDownDependents()
 					false
 				case e:Exception	=>
 					// TODO move this into the Domain
@@ -81,17 +86,17 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 		}
 	}
 	
-	// calls read on sources, sources call back from read
+	/** calls read on sources, sources call back from read */
 	protected def calculate():Unit
 	
-	// called by deps between update and reset 
+	/** called by deps between update and reset */ 
 	final def current:Cur = {
 		if (engine != Engine.access)	throw WrongThreadException
 		engine notifyReader this
 		cur
 	}
 	
-	// called by deps between update and reset
+	/** called by deps between update and reset */
 	final def message:Option[Msg] = {
 		if (engine != Engine.access)	throw WrongThreadException
 		engine notifyReader this
@@ -105,6 +110,18 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 		disposedFlag	= true
 		sources.clear()
 		sinks.clear()
+	}
+	
+	/** recursively increase the rank of all dependent nodes */
+	private [screact] def pushDown(rank:Int) {
+		if (rank > this.rank) {
+			this.rank	= rank
+			pushDownDependents()
+		}
+	}
+	
+	private def pushDownDependents() {
+		sinks.all foreach { _ pushDown rank+1 }
 	}
 	
 	private def removeSelfFromSources() {

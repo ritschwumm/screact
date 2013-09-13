@@ -1,4 +1,4 @@
-A simple reactive programming library.
+A simple reactive programming library
 
 To build this code, get and install SBT from 
     https://github.com/sbt/sbt
