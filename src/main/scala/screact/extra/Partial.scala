@@ -10,7 +10,7 @@ object Partial {
 	def apply[S,T](s:Signal[S], l:TLens[S,T]):Partial[S,T]	= new Partial[S,T] {
 		val master:Signal[S]					= s
 		val get:Signal[T]						= s map l.get
-		 def put(t:Events[T]):Events[S]			= (putter(t) snapshotWith master) { _(_) }
+		def put(t:Events[T]):Events[S]			= (putter(t) snapshotWith master) { _(_) }
 		def putter(t:Events[T]):Events[Endo[S]]	= t map l.putter
 	}
 	
