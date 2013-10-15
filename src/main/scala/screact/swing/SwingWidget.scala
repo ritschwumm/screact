@@ -10,7 +10,7 @@ import screact.extra.Blocker
 object SwingWidget {
 	/** simply emit events from some Connectable */
 	def events[T](connect:Effect[T]=>Disposable):Events[T]	= {
-		require(insideEDT, "SwingWidget may not be constructed outside the EDT")
+		require(insideEDT, "SwingWidget events may not be constructed outside the EDT")
 		
 		val	events		= new SourceEvents[T]
 		// BETTER call this at some time
@@ -18,18 +18,18 @@ object SwingWidget {
 		events
 	}
 	
-	/** signal values by some getter, changing on events from some Connectable */
+	/** Signal values by some getter, changing on events from some Connectable */
 	def signal[T,X](connect:Effect[X]=>Disposable, getter:Thunk[T]):Signal[T]	=
 			events(connect) tag getter() hold getter()
 	
 	/** 
-	gui components in signal transformer style:
-	the signal determines the state of the component,
-	events are fired on user interaction but never on
-	signal changes.
+	wraps a swing component to take an input Signal and mit change Events.
+	the input signal determines the state of the component.
+	change events are only fired on user interaction, but not on changes 
+	of the input signal.
 	*/
 	def transformer[S,T,X](input:Signal[S], connect:Effect[X]=>Disposable, getter:Thunk[T], setter:Effect[S])(implicit ob:Observing):Events[T]	= {
-		require(insideEDT, "SwingWidget may not be constructed outside the EDT")
+		require(insideEDT, "SwingWidget transformer may not be constructed outside the EDT")
 		
 		val blocker	= new Blocker
 		val events	= new WidgetEvents[T]
@@ -54,8 +54,7 @@ object SwingWidget {
 	
 	//------------------------------------------------------------------------------
 	
-	// NOTE in contrast to SourceEvents, this allows multiple calls to emit within the same cycle.
-	// the last emit wins.
+	/** in contrast to SourceEvents, this allows multiple calls to emit within the same cycle. the last emit wins. */
 	private class WidgetEvents[T] extends Events[T] { outer =>
 		var	msg:Option[T]	= None
 		
