@@ -20,7 +20,7 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 	private var sources	= mutable.ArrayBuffer[Node]()
 	
 	/** Nodes reading data from this Reactive */
-	private[screact] val sinks	= new HasSinks(engine.sinksCache)
+	private[screact] val sinks	= engine.newHasSinks()
 	
 	private[screact] final def update():Update = {
 		if (disposedFlag)	return Unchanged

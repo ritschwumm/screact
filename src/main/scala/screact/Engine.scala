@@ -22,8 +22,14 @@ object Engine {
 
 /** this is the main workhorse which schedules all activities on Reactive Nodes */
 final class Engine extends Logging {
-	private[screact] val sinksCache	= new SinksCache
+	private val sinksCache	= new SinksCache
 	
+	private[screact] def newHasSinks():Sinks	=
+			new HasSinks(sinksCache)
+		
+	private [screact] def registerNode(node:Node):Long	=
+			sinksCache register node
+			
 	//------------------------------------------------------------------------------
 	//## scheduler entrypoint
 	

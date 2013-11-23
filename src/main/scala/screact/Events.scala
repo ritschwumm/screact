@@ -116,7 +116,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 	// monoid with never
 	
 	final def orElse[U>:T](that:Events[U]):Events[U]	= 
-			(this,that) match {
+			(this, that) match {
 				case (_,_:NeverEvents[_])	=> this
 				case (_:NeverEvents[_],_)	=> that
 				case _ =>
@@ -126,6 +126,18 @@ trait Events[+T] extends Reactive[Unit,T] {
 						val thatMessage	= that.message
 						thisMessage orElse thatMessage 
 					}
+			}
+			
+	final def mergeWith[U>:T](that:Events[U])(func:(U,U)=>U):Events[U]	= 
+			events {
+				// NOTE needs to access both message methods or registration fails!
+				(this.message, that.message) match {
+					case (Some(thisMessage),	Some(thatMessage))	=> Some(func(thisMessage, thatMessage))
+					case (Some(thisMessage),	None)				=> Some(thisMessage)
+					case (None,					Some(thatMessage))	=> Some(thatMessage)
+					case (None,					None)	=> None
+					
+				}
 			}
 	
 	// combine with values

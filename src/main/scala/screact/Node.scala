@@ -18,5 +18,5 @@ private[screact] trait Node {
 	/** called on all updated nodes at the end of an update cycle */
 	private[screact] def reset():Unit
 	
-	private[screact] var id	= engine.sinksCache register this
+	private[screact] var id:Long	= engine registerNode this
 }

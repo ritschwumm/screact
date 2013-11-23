@@ -6,7 +6,7 @@ import scutil.lang._
 trait Signal[+T] extends Reactive[T,T] { 
 	// convert to Events
 	
-	final def changes:Events[T]	= 
+	final def edge:Events[T]	= 
 			events { message }
 	
 	// TODO state
@@ -16,7 +16,7 @@ trait Signal[+T] extends Reactive[T,T] {
 	/** value before a change occured, like slide but throwing away the current value */
 	final def previous:Events[T]	= {
 		var	previous	= current
-		changes map { next =>
+		edge map { next =>
 			val	out		= previous
 			previous	= next
 			out
@@ -26,7 +26,7 @@ trait Signal[+T] extends Reactive[T,T] {
 	/** apply a function to previous and current value on change */	
 	final def slide[U](func:(T,T)=>U):Events[U] = {
 		var	previous	= current
-		changes map { next =>
+		edge map { next =>
 			val	out		= func(previous, next)
 			previous	= next
 			out
@@ -75,7 +75,7 @@ trait Signal[+T] extends Reactive[T,T] {
 	// delayable
 	
 	final def delay[U>:T](initial:U)(implicit observing:Observing):Signal[U]	= 
-			changes.delay hold initial
+			edge.delay hold initial
 
 	// other
 		
