@@ -1,6 +1,6 @@
 package screact.debug
 
-import scutil.Implicits._
+import scutil.implicits._
 import scutil.log.Logging
 
 /** simple, indenting debug utility */

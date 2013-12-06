@@ -7,7 +7,7 @@ import java.util.Timer
 import java.util.TimerTask
 
 import scutil.lang._
-import scutil.Implicits._
+import scutil.implicits._
 import scutil.gui.SwingUtil._
 import scutil.time._
 
