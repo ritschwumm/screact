@@ -2,7 +2,6 @@ package screact.extra
 
 import scutil.lang._
 import scutil.implicits._
-import scutil.lens._
 
 import screact._
 

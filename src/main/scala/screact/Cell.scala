@@ -1,7 +1,6 @@
 package screact
 
 import scutil.lang._
-import scutil.lens._
 
 object Cell {
 	implicit def asSignal[T](it:Cell[T]):Signal[T]	= it.signal
