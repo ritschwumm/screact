@@ -7,12 +7,12 @@ import scutil.implicits._
 
 object Events {
 	// (in foldLeft never[T]) { _ orElse _ }
-	def multiOrElse[T](in:Seq[Events[T]]):Events[T]	=
+	def multiOrElse[T](in:ISeq[Events[T]]):Events[T]	=
 			events {
 				in flatMap { _.message } headOption;
 			}
 			
-	def multiOccurs[T](in:Seq[Events[T]]):Events[Seq[T]]	=
+	def multiOccurs[T](in:ISeq[Events[T]]):Events[ISeq[T]]	=
 			events {
 				in flatMap { _.message } guardBy { _.nonEmpty }
 			}
@@ -144,6 +144,9 @@ trait Events[+T] extends Reactive[Unit,T] {
 	
 	final def tag[U](that: =>U):Events[U]	=
 			this map { _ => that }
+		
+	final def tagUnit:Events[Unit]	=
+			this map constant(())
 		
 	final def when(func: =>Boolean):Events[T]	= 
 			this filter { _ => func }
