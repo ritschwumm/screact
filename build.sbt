@@ -2,13 +2,13 @@ name			:= "screact"
 
 organization	:= "de.djini"
 
-version			:= "0.56.0"
+version			:= "0.57.0"
 
 scalaVersion	:= "2.11.2"
 
 libraryDependencies	++= Seq(
-	"de.djini"	%% "scutil-core"	% "0.50.0"	% "compile",
-	"de.djini"	%%	"scutil-swing"	% "0.50.0"	% "compile"
+	"de.djini"	%% "scutil-core"	% "0.51.0"	% "compile",
+	"de.djini"	%%	"scutil-swing"	% "0.51.0"	% "compile"
 )
 
 scalacOptions	++= Seq(
