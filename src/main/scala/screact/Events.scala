@@ -108,10 +108,20 @@ trait Events[+T] extends Reactive[Unit,T] {
 	// monad
 	
 	final def flatMap[U](func:T=>Events[U]):Events[U] =
-			this map func hold never flattenEvents;
+			(this map func hold never).flattenEvents
 		
 	final def flatten[U](implicit ev:T=>Events[U]):Events[U]	= 
 			this flatMap ev
+		
+	// monad to Signal
+	
+	final def flatMapSignal[U](func:T=>Signal[U]):Events[U]	=
+			events {
+				this.message map { it => func(it).current }
+			}
+			
+	final def flattenSignal[U](implicit ev:T=>Signal[U]):Events[U]	=
+			this flatMapSignal ev
 		
 	// monoid with never
 	
