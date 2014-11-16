@@ -1,7 +1,6 @@
 package screact.extra
 
 import scutil.lang._
-import scutil.implicits._
 
 import screact._
 

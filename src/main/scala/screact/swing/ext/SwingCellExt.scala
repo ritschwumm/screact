@@ -1,7 +1,5 @@
 package screact.swing.ext
 
-import scutil.gui.SwingUtil._
-
 import screact._
 
 final class SwingCellExt[T](delegate:Cell[T]) extends EdtReactive {

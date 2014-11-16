@@ -9,7 +9,7 @@ object Events {
 	// (in foldLeft never[T]) { _ orElse _ }
 	def multiOrElse[T](in:ISeq[Events[T]]):Events[T]	=
 			events {
-				in flatMap { _.message } headOption;
+				(in flatMap { _.message }).headOption
 			}
 			
 	def multiOccurs[T](in:ISeq[Events[T]]):Events[ISeq[T]]	=
