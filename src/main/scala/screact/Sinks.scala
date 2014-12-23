@@ -16,14 +16,17 @@ final object NoSinks extends Sinks {
 	def clear() {}
 }
 
+object HasSinks {
+	private val sentinel	= new AnyRef
+}
+
 private final class HasSinks(cache:SinksCache) extends Sinks {
-	// BETTER check whether a LongMap makes sense here
-	private val ids	= new mutable.HashSet[Long]
+	private val ids	= new mutable.LongMap[AnyRef]
 	
-	def all:Set[Node]	= (ids flatMap cache.lookup).toSet
+	def all:Set[Node]	= ids.keySet.toSet flatMap cache.lookup
 	
 	def add(node:Node) {
-		ids	+= node.id
+		ids	+= (node.id -> HasSinks.sentinel)
 	}
 	
 	def remove(node:Node) {
