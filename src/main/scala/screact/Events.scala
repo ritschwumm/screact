@@ -52,7 +52,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 	
 	// stateful events
 	
-	/** take state and message, produce new state an output */
+	/** take state and message, produce new state and output */
 	final def stateful[S,U](initial:S)(func:(S,T)=>(S,U)):Events[U]	= {
 		var state	= initial
 		events {
