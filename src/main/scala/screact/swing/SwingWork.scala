@@ -16,14 +16,4 @@ object SwingWork {
 					)
 				}
 			}
-			
-	def asyncException[T](in:Events[Thunk[T]])(implicit observing:Observing):Events[Tried[Exception,T]]	=
-			emitter[Tried[Exception,T]] doto { out =>
-				in observe { input =>
-					swingWorkerException[T](
-						input,
-						out.emit
-					)
-				}
-			}
 }
