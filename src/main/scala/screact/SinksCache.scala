@@ -5,10 +5,10 @@ import java.lang.ref.WeakReference
 import scala.collection.immutable
 
 /** saves weak references by only keeping one per node */
-private class SinksCache {
-	var	nodes	= immutable.LongMap.empty[WeakReference[Node]]
+private final class SinksCache {
+	private var	nodes	= immutable.LongMap.empty[WeakReference[Node]]
 	
-	var	nextId	= 0L
+	private var	nextId	= 0L
 	
 	def register(node:Node):Long = {
 		while (nodes contains nextId) { nextId += 1 }
@@ -21,6 +21,6 @@ private class SinksCache {
 	}
 	
 	def gc() {
-		nodes	= nodes filterNot { _._2.get == null }
+		nodes	= nodes filterNot { _._2.get eq null }
 	}
 }

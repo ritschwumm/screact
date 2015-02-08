@@ -42,7 +42,7 @@ object SwingClock {
 		def run() {
 			val alive	= edtWait {
 				val output	= outputRef.get
-				val alive	= output != null && !output.disposed
+				val alive	= (output ne null) && !output.disposed
 				if (alive) {
 					output emit MilliInstant.now
 				}

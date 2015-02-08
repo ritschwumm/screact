@@ -9,12 +9,9 @@ trait Signal[+T] extends Reactive[T,T] {
 	final def edge:Events[T]	= 
 			events { message }
 	
-	// TODO state
-	// if a rank mismatch can cause re-evalutation,
-	// then previous and slide must not be stateful.
-	
 	/** value before a change occured, like slide but throwing away the current value */
 	final def previous:Events[T]	= {
+		// modify state only after evaluation of source nodes
 		var	previous	= current
 		edge map { next =>
 			val	out		= previous
@@ -25,6 +22,7 @@ trait Signal[+T] extends Reactive[T,T] {
 	
 	/** apply a function to previous and current value on change */	
 	final def slide[U](func:(T,T)=>U):Events[U] = {
+		// modify state only after evaluation of source nodes
 		var	previous	= current
 		edge map { next =>
 			val	out		= func(previous, next)

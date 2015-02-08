@@ -24,12 +24,9 @@ trait Events[+T] extends Reactive[Unit,T] {
 	
 	// convert to Signal
 	
-	// TODO state
-	// if a rank mismatch can cause re-evalutation,
-	// then hold and scan must not be stateful.
-	
 	/** the initial value at start and the last event's value afterwards */
 	final def hold[U>:T](initial:U):Signal[U]	= {
+		// modify state only after evaluation of source nodes
 		var value	= initial
 		signal {
 			message foreach { msgval => 
@@ -41,6 +38,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 	
 	/** like hold, but with access to the previous value */
 	final def scan[U](initial:U)(func:(U,T)=>U):Signal[U]	= {
+		// modify state only after evaluation of source nodes
 		var value	= initial
 		signal {
 			message foreach { msgval => 
@@ -54,6 +52,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 	
 	/** take state and message, produce new state and output */
 	final def stateful[S,U](initial:S)(func:(S,T)=>(S,U)):Events[U]	= {
+		// modify state only after evaluation of source nodes
 		var state	= initial
 		events {
 			message match {
@@ -234,12 +233,14 @@ trait Events[+T] extends Reactive[Unit,T] {
 	
 	/** take the first count events, drop the rest */
 	final def take(count:Int):Events[T]	= {
-		// TODO must not be stateful, rank mismatch re-evaluation might occur
+		// modify state only after evaluation of source nodes
 		var	todo	= count
 		events {
+			// when we're done, loosing the connection is actually a good thing
 			if (todo != 0) {
+				val out	= message
 				todo	-= 1
-				message
+				out
 			}
 			else {
 				None
@@ -249,7 +250,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 	
 	/** drop the first count events, take the rest */
 	final def drop(count:Int):Events[T] = {
-		// TODO must not be stateful, rank mismatch re-evaluation might occur
+		// modify state only after evaluation of source nodes
 		var	todo	= count
 		events {
 			// need to access message every time to avoid loss of connection

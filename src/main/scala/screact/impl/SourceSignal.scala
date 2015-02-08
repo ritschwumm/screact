@@ -4,7 +4,7 @@ import scutil.lang._
 import scutil.log._
 
 /** root of a propagation tree */
-private [screact] class SourceSignal[T](initial:T) extends Signal[T] with Logging { outer =>
+private final class SourceSignal[T](initial:T) extends Signal[T] with Logging { outer =>
 	var cur:T			= initial
 	var msg:Option[T]	= None
 	
@@ -21,13 +21,14 @@ private [screact] class SourceSignal[T](initial:T) extends Signal[T] with Loggin
 				Some(outer)
 			}
 			else {
-				// TODO move this into the Domain
+				// TODO move logging into the Domain
 				ERROR(
-						"cannot set a signal twice within the same update cycle",
-						origin,
-						msg.get,
-						cur,
-						value)
+					"cannot set a signal twice within the same update cycle",
+					origin,
+					msg.get,
+					cur,
+					value
+				)
 				None
 			}
 		}

@@ -12,7 +12,7 @@ object Engine {
 	
 	def access:Engine	= {
 		val	oldEngine	= threadLocal.get
-		if (oldEngine != null)	return oldEngine
+		if (oldEngine ne null)	return oldEngine
 		
 		val newEngine	= new Engine
 		threadLocal set newEngine

@@ -4,7 +4,7 @@ import scutil.lang._
 import scutil.log._
 
 /** root of a propagation tree */
-private [screact] class SourceEvents[T] extends Events[T] with Logging { outer =>
+private final class SourceEvents[T] extends Events[T] with Logging { outer =>
 	var	msg:Option[T]	= None
 	
 	/** schedules as an external event */
@@ -18,12 +18,13 @@ private [screact] class SourceEvents[T] extends Events[T] with Logging { outer =
 			Some(outer)
 		}
 		else {
-			// TODO move this into the Domain
+			// TODO move logging into the Domain
 			ERROR(
-					"cannot emit an event twice within the same update cycle", 
-					origin, 
-					msg.get,
-					value)
+				"cannot emit an event twice within the same update cycle", 
+				origin, 
+				msg.get,
+				value
+			)
 			None
 		}
 	}

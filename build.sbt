@@ -1,6 +1,6 @@
 name			:= "screact"
 organization	:= "de.djini"
-version			:= "0.70.0"
+version			:= "0.71.0"
 
 scalaVersion	:= "2.11.5"
 scalacOptions	++= Seq(

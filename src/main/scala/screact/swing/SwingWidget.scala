@@ -55,7 +55,7 @@ object SwingWidget {
 	//------------------------------------------------------------------------------
 	
 	/** in contrast to SourceEvents, this allows multiple calls to emit within the same cycle. the last emit wins. */
-	private class WidgetEvents[T] extends Events[T] { outer =>
+	private final class WidgetEvents[T] extends Events[T] { outer =>
 		var	msg:Option[T]	= None
 		
 		var delayed:Option[T]	= None
