@@ -16,7 +16,7 @@ trait Emitter[T] extends Disposable { outer =>
 		def emit(it:S) { outer emit (bijection write it) }
 	}
 	
-	def dispose() { 
-		events.dispose() 
+	def dispose() {
+		events.dispose()
 	}
 }

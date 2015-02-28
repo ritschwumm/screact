@@ -19,7 +19,7 @@ object Events {
 }
 
 /** a Reactive without a (useful) current value just emitting events */
-trait Events[+T] extends Reactive[Unit,T] { 
+trait Events[+T] extends Reactive[Unit,T] {
 	private[screact] val cur:Unit	= ()
 	
 	// convert to Signal
@@ -29,8 +29,8 @@ trait Events[+T] extends Reactive[Unit,T] {
 		// modify state only after evaluation of source nodes
 		var value	= initial
 		signal {
-			message foreach { msgval => 
-				value = msgval 
+			message foreach { msgval =>
+				value = msgval
 			}
 			value
 		}
@@ -41,8 +41,8 @@ trait Events[+T] extends Reactive[Unit,T] {
 		// modify state only after evaluation of source nodes
 		var value	= initial
 		signal {
-			message foreach { msgval => 
-				value = func(value, msgval) 
+			message foreach { msgval =>
+				value = func(value, msgval)
 			}
 			value
 		}
@@ -68,13 +68,13 @@ trait Events[+T] extends Reactive[Unit,T] {
 	
 	// with a zero
 	
-	final def filter(func:Predicate[T]):Events[T]	= 
+	final def filter(func:Predicate[T]):Events[T]	=
 			events { message filter func }
 		
-	final def filterNot(func:Predicate[T]):Events[T]	= 
+	final def filterNot(func:Predicate[T]):Events[T]	=
 			events { message filter !func }
 			
-	final def collect[U](func:PartialFunction[T,U]):Events[U]	= 
+	final def collect[U](func:PartialFunction[T,U]):Events[U]	=
 			events { message collect func }
 		
 	final def filterMap[U](func:T=>Option[U]):Events[U] =
@@ -85,19 +85,19 @@ trait Events[+T] extends Reactive[Unit,T] {
 		
 	// functor
 	
-	final def map[U](func:T=>U):Events[U]	= 
+	final def map[U](func:T=>U):Events[U]	=
 			events { message map func }
 	
 	// applicative functor
 	
-	final def ap[U,V](source:Events[U])(implicit ev:T=>U=>V):Events[V]	= 
+	final def ap[U,V](source:Events[U])(implicit ev:T=>U=>V):Events[V]	=
 			for {
 				func	<- this map ev
 				arg		<- source
 			}
 			yield func(arg)
 	
-	final def pa[U](func:Events[T=>U]):Events[U]	= 
+	final def pa[U](func:Events[T=>U]):Events[U]	=
 			for {
 				func	<- func
 				arg		<- this
@@ -109,7 +109,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def flatMap[U](func:T=>Events[U]):Events[U] =
 			(this map func hold never).flattenEvents
 		
-	final def flatten[U](implicit ev:T=>Events[U]):Events[U]	= 
+	final def flatten[U](implicit ev:T=>Events[U]):Events[U]	=
 			this flatMap ev
 		
 	// monad to Signal
@@ -124,7 +124,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 		
 	// monoid with never
 	
-	final def orElse[U>:T](that:Events[U]):Events[U]	= 
+	final def orElse[U>:T](that:Events[U]):Events[U]	=
 			(this, that) match {
 				case (_,_:NeverEvents[_])	=> this
 				case (_:NeverEvents[_],_)	=> that
@@ -133,11 +133,11 @@ trait Events[+T] extends Reactive[Unit,T] {
 						// NOTE needs to access both message methods or registration fails!
 						val thisMessage	= this.message
 						val thatMessage	= that.message
-						thisMessage orElse thatMessage 
+						thisMessage orElse thatMessage
 					}
 			}
 			
-	final def mergeWith[U>:T](that:Events[U])(func:(U,U)=>U):Events[U]	= 
+	final def mergeWith[U>:T](that:Events[U])(func:(U,U)=>U):Events[U]	=
 			events {
 				// NOTE needs to access both message methods or registration fails!
 				(this.message, that.message) match {
@@ -157,7 +157,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def tagUnit:Events[Unit]	=
 			this map constant(())
 		
-	final def when(func: =>Boolean):Events[T]	= 
+	final def when(func: =>Boolean):Events[T]	=
 			this filter { _ => func }
 	
 	final def trueUnit(implicit ev:T=>Boolean):Events[Unit]	=
@@ -174,14 +174,14 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def snapshotOnly[U](that:Signal[U]):Events[U]	=
 			snapshotWith(that) { (_, it) => it }
 	
-	final def snapshotWith[U,V](that:Signal[U])(func:(T,U)=>V):Events[V]	= 
+	final def snapshotWith[U,V](that:Signal[U])(func:(T,U)=>V):Events[V]	=
 			events {
 				val when	= this.message
 				val what	= that.current
 				when map { it => func(it, what) }
 			}
 	
-	final def gate(that:Signal[Boolean]):Events[T]	= 
+	final def gate(that:Signal[Boolean]):Events[T]	=
 			events {
 				val when	= this.message
 				val gate	= that.current
@@ -204,7 +204,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 			zipWith(that) { (_,_) }
 	
 	/** emits an event if both inputs fire at the same instant */
-	final def zipWith[U,V](that:Events[U])(func:(T,U)=>V):Events[V]	= 
+	final def zipWith[U,V](that:Events[U])(func:(T,U)=>V):Events[V]	=
 			events {
 				(this.message, that.message) match {
 					case (Some(thisMessage),Some(thatMessage))	=> Some(func(thisMessage, thatMessage))
@@ -218,15 +218,15 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def unzip[U,V](implicit ev:T=>(U,V)):(Events[U],Events[V])	=
 			(map(_._1), map(_._2))
 	
-	final def sum[U](that:Events[U]):Events[Either[T,U]]	= 
+	final def sum[U](that:Events[U]):Events[Either[T,U]]	=
 			(this map { Left(_) }) orElse (that map { Right(_) })
 		
-	final def unsum[U,V](implicit ev:T=>Either[U,V]):(Events[U],Events[V])	= 
+	final def unsum[U,V](implicit ev:T=>Either[U,V]):(Events[U],Events[V])	=
 			(	events { message flatMap { it:T => ev(it).left.toOption		} },
 				events { message flatMap { it:T => ev(it).right.toOption	} }
 			)
 		
-	final def partition(func:T=>Boolean):(Events[T],Events[T])	= 
+	final def partition(func:T=>Boolean):(Events[T],Events[T])	=
 			(	events { message filter  func },
 				events { message filter !func }
 			)

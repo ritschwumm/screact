@@ -30,13 +30,13 @@ object Partial {
 				def container:Signal[S]	= master
 				
 				val get:Signal[T]	=
-						signal { 
-							select.current cata (default, _ get master.current) 
+						signal {
+							select.current cata (default, _ get master.current)
 						}
 						
-				def putter(detail:Events[T]):Events[Endo[S]]	= 
-						detail snapshot select collect { 
-							case (detail, Some(view)) => view putter detail 
+				def putter(detail:Events[T]):Events[Endo[S]]	=
+						detail snapshot select collect {
+							case (detail, Some(view)) => view putter detail
 						}
 			}
 			
@@ -58,8 +58,8 @@ object Partial {
 
 /**
 helper to edit some part of an object:
-provides an input Signal for an editor component and can 
-turn the editor's output Events into changes of the complete object. 
+provides an input Signal for an editor component and can
+turn the editor's output Events into changes of the complete object.
 */
 trait Partial[S,T] {
 	def container:Signal[S]

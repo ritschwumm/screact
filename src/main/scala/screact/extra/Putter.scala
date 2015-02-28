@@ -19,7 +19,7 @@ object Putter {
 	
 	def zero[T]:Events[Endo[T]]	= never[Endo[T]]
 		
-	def append[T](a:Events[Endo[T]], b:Events[Endo[T]]):Events[Endo[T]]	= 
+	def append[T](a:Events[Endo[T]], b:Events[Endo[T]]):Events[Endo[T]]	=
 			events {
 				(a.message, b.message) match {
 					case (Some(a),Some(b))	=> Some(a andThen b)

@@ -20,7 +20,7 @@ object SwingClock {
 	
 	/*
 	NOTE this doesn't work as desired if there are any hard references to output.events left:
-	-	Swing tends to keep hard references to JFrames around. 
+	-	Swing tends to keep hard references to JFrames around.
 		-Dswing.bufferPerWindow=false helps.
 		calling Events#dispose helps.
 	-	scala keeps hard references to objects (as opposed to vals).
@@ -55,6 +55,6 @@ object SwingClock {
 	}
 	
 	def repeat[T](cycle:MilliDuration, delay:MilliDuration, input:Events[Option[T]]):Events[T] =
-			input.filterOption orElse 
+			input.filterOption orElse
 			(input flatMap { _ cata (never, SwingClock(cycle, delay) tag _) })
 }

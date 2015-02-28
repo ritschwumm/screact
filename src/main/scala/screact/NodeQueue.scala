@@ -6,11 +6,11 @@ import scala.collection.mutable
 private final class NodeQueue {
 	private val items	= mutable.ArrayBuffer.empty[Node]
 	
-	def insert(item:Node) { 
+	def insert(item:Node) {
 		items += item
 	}
 	
-	def insertMany(itemMany:Iterable[Node]) { 
+	def insertMany(itemMany:Iterable[Node]) {
 		items ++= itemMany
 	}
 	

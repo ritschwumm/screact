@@ -4,9 +4,9 @@ import scala.collection.mutable
 
 import scutil.lang._
 
-/** 
-Observing keeps hard references to observed Reactives so they are not garbage 
-collected before their last observer. Every class observing a Reactive must 
+/**
+Observing keeps hard references to observed Reactives so they are not garbage
+collected before their last observer. Every class observing a Reactive must
 extend this trait.
 */
 trait Observing {

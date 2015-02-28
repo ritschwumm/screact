@@ -3,10 +3,10 @@ package screact
 import scutil.lang._
 
 /** A Reactive with a current value emitting change events. change Events are emitted only if the value has changed. */
-trait Signal[+T] extends Reactive[T,T] { 
+trait Signal[+T] extends Reactive[T,T] {
 	// convert to Events
 	
-	final def edge:Events[T]	= 
+	final def edge:Events[T]	=
 			events { message }
 	
 	/** value before a change occured, like slide but throwing away the current value */
@@ -33,24 +33,24 @@ trait Signal[+T] extends Reactive[T,T] {
 		
 	// functor
 	
-	final def map[U](func:T=>U):Signal[U]	= 
+	final def map[U](func:T=>U):Signal[U]	=
 			signal { func(current) }
 		
 	// applicative functor
 	
-	final def ap[U,V](source:Signal[U])(implicit ev:T=>U=>V):Signal[V]	= 
+	final def ap[U,V](source:Signal[U])(implicit ev:T=>U=>V):Signal[V]	=
 			signal { ev(current)(source.current) }
 		
-	final def pa[U](func:Signal[T=>U]):Signal[U]	= 
+	final def pa[U](func:Signal[T=>U]):Signal[U]	=
 			signal { func.current apply current }
 	
 	// monad
 	
-	final def flatMap[U](func:T=>Signal[U]):Signal[U]	= 
+	final def flatMap[U](func:T=>Signal[U]):Signal[U]	=
 			signal { func(current).current }
 	
-	final def flatten[U](implicit ev:T=>Signal[U]):Signal[U]	= 
-			this flatMap ev 
+	final def flatten[U](implicit ev:T=>Signal[U]):Signal[U]	=
+			this flatMap ev
 	
 	// monad to Events
 	
@@ -72,12 +72,12 @@ trait Signal[+T] extends Reactive[T,T] {
 	
 	// delayable
 	
-	final def delay[U>:T](initial:U)(implicit observing:Observing):Signal[U]	= 
+	final def delay[U>:T](initial:U)(implicit observing:Observing):Signal[U]	=
 			edge.delay hold initial
 
 	// other
 		
-	final def zip[U](that:Signal[U]):Signal[(T,U)]	= 
+	final def zip[U](that:Signal[U]):Signal[(T,U)]	=
 			zipWith(that) { (_,_) }
 		
 	final def zipWith[U,V](that:Signal[U])(func:(T,U)=>V):Signal[V]	=

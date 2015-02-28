@@ -60,9 +60,9 @@ final class Engine extends Logging {
 			// this may schedule new delayed events, those are treated as external
 			updateCycle(internal)
 		}
-		catch { case e:Exception => 
+		catch { case e:Exception =>
 			// TODO move this into the Domain
-			ERROR(e) 
+			ERROR(e)
 		}
 		finally {
 			updating	= false
@@ -144,6 +144,6 @@ final class Engine extends Logging {
 	def clientCall:Option[StackTraceElement] =
 			Thread.currentThread.getStackTrace find { it => clientClass(it.getClassName) }
 		
-	private def clientClass(name:String):Boolean	= 
+	private def clientClass(name:String):Boolean	=
 			!(ignoredPrefixes exists { name startsWith _ })
 }

@@ -10,7 +10,7 @@ private final class SourceEvents[T] extends Events[T] with Logging { outer =>
 	/** schedules as an external event */
 	def emit(value:T) {
 		engine schedule thunk { emitImpl(value) }
-	}  
+	}
 	
 	private def emitImpl(value:T):Option[Node]	= {
 		if (msg.isEmpty) {
@@ -20,8 +20,8 @@ private final class SourceEvents[T] extends Events[T] with Logging { outer =>
 		else {
 			// TODO move logging into the Domain
 			ERROR(
-				"cannot emit an event twice within the same update cycle", 
-				origin, 
+				"cannot emit an event twice within the same update cycle",
+				origin,
 				msg.get,
 				value
 			)
@@ -32,7 +32,7 @@ private final class SourceEvents[T] extends Events[T] with Logging { outer =>
 	// msg does not change in here
 	def calculate() {}
 	
-	def reset() { 
+	def reset() {
 		msg	= None
 	}
 	

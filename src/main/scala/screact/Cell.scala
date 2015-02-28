@@ -27,7 +27,7 @@ trait Cell[T] extends Disposable { outer =>
 		override def dispose()	{ signal.dispose() }
 	}
 	
-	def dispose() { 
-		signal.dispose() 
+	def dispose() {
+		signal.dispose()
 	}
 }

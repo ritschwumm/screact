@@ -11,7 +11,7 @@ private final class SourceSignal[T](initial:T) extends Signal[T] with Logging { 
 	/** schedules as an external event */
 	def set(value:T) {
 		engine schedule thunk { setImpl(value) }
-	}  
+	}
 	
 	private def setImpl(value:T):Option[Node]	= {
 		if (value != cur) {

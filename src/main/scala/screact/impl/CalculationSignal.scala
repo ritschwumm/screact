@@ -12,8 +12,8 @@ private final class CalculationSignal[T](next: =>T) extends Signal[T] {
 		msg	= Some(cur)
 	}
 	
-	def reset() { 
-		msg = None 
+	def reset() {
+		msg = None
 	}
 	
 	init()

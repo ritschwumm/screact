@@ -6,7 +6,7 @@ import scutil.gui.SwingUtil._
 import screact._
 import screact.extra.Blocker
 
-/** used to connect Swing widgets to the reactive world */ 
+/** used to connect Swing widgets to the reactive world */
 object SwingWidget {
 	/** simply emit events from some Connectable */
 	def events[T](connect:Effect[T]=>Disposable):Events[T]	= {
@@ -22,10 +22,10 @@ object SwingWidget {
 	def signal[T,X](connect:Effect[X]=>Disposable, getter:Thunk[T]):Signal[T]	=
 			events(connect) tag getter() hold getter()
 	
-	/** 
+	/**
 	wraps a swing component to take an input Signal and mit change Events.
 	the input signal determines the state of the component.
-	change events are only fired on user interaction, but not on changes 
+	change events are only fired on user interaction, but not on changes
 	of the input signal.
 	*/
 	def transformer[S,T,X](input:Signal[S], connect:Effect[X]=>Disposable, getter:Thunk[T], setter:Effect[S])(implicit ob:Observing):Events[T]	= {
@@ -66,18 +66,18 @@ object SwingWidget {
 			if (first) {
 				// TODO use the (Swing-)Domain to schedule
 				edt {
-					engine schedule thunk { 
+					engine schedule thunk {
 						msg		= delayed
 						delayed	= None
-						Some(outer) 
+						Some(outer)
 					}
 				}
 			}
-		}  
+		}
 		
 		def calculate() {}	// msg does not change in here
 		
-		def reset() { 
+		def reset() {
 			msg		= None
 		}
 		

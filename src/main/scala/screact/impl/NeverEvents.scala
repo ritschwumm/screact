@@ -12,4 +12,4 @@ private final class NeverEvents[T] extends Events[T] {
 	
 	// not necessary, we don't have dependencies
 	// init()
-}  
+}

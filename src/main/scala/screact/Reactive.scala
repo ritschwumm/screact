@@ -76,7 +76,7 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 				calculate()
 				true
 			}
-			catch { 
+			catch {
 				case RankMismatch	=>
 					pushDownDependents()
 					false
@@ -91,7 +91,7 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 	/** calls read on sources, sources call back from read */
 	protected def calculate():Unit
 	
-	/** called by deps between update and reset */ 
+	/** called by deps between update and reset */
 	final def current:Cur = {
 		if (engine != Engine.access)	throw WrongThreadException
 		engine notifyReader this

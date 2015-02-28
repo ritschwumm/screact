@@ -5,12 +5,12 @@ private final class CalculationEvents[T](next: =>Option[T]) extends Events[T] {
 	var msg:Option[T]	= None
 	
 	def calculate() {
-		msg = next 
+		msg = next
 	}
 	
 	def reset() {
-		msg = None 
+		msg = None
 	}
 	
 	init()
-}    
+}
