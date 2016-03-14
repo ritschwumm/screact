@@ -1,8 +1,6 @@
 package screact.swing
 
 import java.lang.ref.WeakReference
-import java.awt.event.ActionEvent
-import java.awt.event.ActionListener
 import java.util.Timer
 import java.util.TimerTask
 
