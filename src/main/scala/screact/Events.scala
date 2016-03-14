@@ -9,12 +9,12 @@ object Events {
 	// (in foldLeft never[T]) { _ orElse _ }
 	def multiOrElse[T](in:ISeq[Events[T]]):Events[T]	=
 			events {
-				(in flatMap { _.message }).headOption
+				(in collapseMap { _.message }).headOption
 			}
 			
 	def multiOccurs[T](in:ISeq[Events[T]]):Events[ISeq[T]]	=
 			events {
-				in flatMap { _.message } guardBy { _.nonEmpty }
+				in collapseMap { _.message } guardBy { _.nonEmpty }
 			}
 }
 

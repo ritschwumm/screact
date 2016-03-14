@@ -2,6 +2,8 @@ package screact
 
 import scala.collection.mutable
 
+import scutil.implicits._
+
 trait Sinks {
 	def all:Set[Node]
 	def add(node:Node):Unit
@@ -23,7 +25,7 @@ object HasSinks {
 private final class HasSinks(cache:SinksCache) extends Sinks {
 	private val ids	= new mutable.LongMap[AnyRef]
 	
-	def all:Set[Node]	= ids.keySet.toSet flatMap cache.lookup
+	def all:Set[Node]	= ids.keySet.toSet collapseMap cache.lookup
 	
 	def add(node:Node) {
 		ids	+= (node.id -> HasSinks.sentinel)

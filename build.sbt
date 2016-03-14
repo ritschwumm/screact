@@ -1,6 +1,6 @@
 name			:= "screact"
 organization	:= "de.djini"
-version			:= "0.89.0"
+version			:= "0.90.0"
 
 scalaVersion	:= "2.11.8"
 scalacOptions	++= Seq(
@@ -20,6 +20,17 @@ scalacOptions	++= Seq(
 
 conflictManager	:= ConflictManager.strict
 libraryDependencies	++= Seq(
-	"de.djini"	%% "scutil-core"	% "0.81.0"	% "compile",
-	"de.djini"	%% "scutil-swing"	% "0.81.0"	% "compile"
+	"de.djini"	%% "scutil-core"	% "0.82.0"	% "compile",
+	"de.djini"	%% "scutil-swing"	% "0.82.0"	% "compile"
+)
+
+wartremoverErrors ++= Seq(
+	Wart.Any2StringAdd,
+	Wart.EitherProjectionPartial,
+	Wart.OptionPartial,
+	Wart.Enumeration,
+	Wart.FinalCaseClass,
+	Wart.JavaConversions,
+	Wart.Option2Iterable,
+	Wart.TryPartial
 )

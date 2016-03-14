@@ -13,29 +13,28 @@ private final class SourceSignal[T](initial:T) extends Signal[T] with Logging { 
 		engine schedule thunk { setImpl(value) }
 	}
 	
-	private def setImpl(value:T):Option[Node]	= {
-		if (value != cur) {
-			if (msg.isEmpty) {
-				cur	= value
-				msg	= Some(value)
-				Some(outer)
+	private def setImpl(value:T):Option[Node]	=
+			if (value != cur) {
+				msg match {
+					case None	=>
+						cur	= value
+						msg	= Some(value)
+						Some(outer)
+					case Some(x)	=>
+						// TODO move logging into the Domain
+						ERROR(
+							"cannot set a signal twice within the same update cycle",
+							origin,
+							x,
+							cur,
+							value
+						)
+						None
+				}
 			}
 			else {
-				// TODO move logging into the Domain
-				ERROR(
-					"cannot set a signal twice within the same update cycle",
-					origin,
-					msg.get,
-					cur,
-					value
-				)
 				None
 			}
-		}
-		else {
-			None
-		}
-	}
 	
 	// msg does not change in here
 	def calculate() {}

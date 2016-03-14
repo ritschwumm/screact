@@ -55,7 +55,7 @@ final class Engine extends Logging {
 	private def scheduleInternal() {
 		try  {
 			updating	= true
-			val	internal	= external flatMap { _ apply () }
+			val	internal	= external collapseMap { _ apply () }
 			external.clear()
 			// this may schedule new delayed events, those are treated as external
 			updateCycle(internal)
