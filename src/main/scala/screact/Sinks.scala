@@ -4,21 +4,21 @@ import scala.collection.mutable
 
 import scutil.base.implicits._
 
-trait Sinks {
+private trait Sinks {
 	def all:Set[Node]
 	def add(node:Node):Unit
 	def remove(node:Node):Unit
 	def clear():Unit
 }
 
-final object NoSinks extends Sinks {
+private final object NoSinks extends Sinks {
 	val all:Set[Node]	= Set.empty
 	def add(node:Node) {}
 	def remove(node:Node) {}
 	def clear() {}
 }
 
-object HasSinks {
+private object HasSinks {
 	private val sentinel	= new AnyRef
 }
 
