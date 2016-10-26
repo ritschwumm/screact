@@ -4,7 +4,7 @@ import java.lang.ref.WeakReference
 import java.util.Timer
 import java.util.TimerTask
 
-import scutil.implicits._
+import scutil.base.implicits._
 import scutil.gui.SwingUtil._
 import scutil.time._
 

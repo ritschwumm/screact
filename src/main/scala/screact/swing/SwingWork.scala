@@ -1,7 +1,7 @@
 package screact.swing
 
+import scutil.base.implicits._
 import scutil.lang._
-import scutil.implicits._
 import scutil.gui.SwingUtil._
 
 import screact._

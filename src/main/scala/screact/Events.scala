@@ -1,7 +1,7 @@
 package screact
 
+import scutil.base.implicits._
 import scutil.lang._
-import scutil.implicits._
 
 // AKA Publisher
 
