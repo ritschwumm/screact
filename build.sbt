@@ -1,6 +1,6 @@
 name			:= "screact"
 organization	:= "de.djini"
-version			:= "0.95.0"
+version			:= "0.96.0"
 
 scalaVersion	:= "2.11.8"
 scalacOptions	++= Seq(
@@ -20,8 +20,8 @@ scalacOptions	++= Seq(
 
 conflictManager	:= ConflictManager.strict
 libraryDependencies	++= Seq(
-	"de.djini"	%% "scutil-core"	% "0.87.0"	% "compile",
-	"de.djini"	%% "scutil-swing"	% "0.87.0"	% "compile"
+	"de.djini"	%% "scutil-core"	% "0.88.0"	% "compile",
+	"de.djini"	%% "scutil-swing"	% "0.88.0"	% "compile"
 )
 
 wartremoverErrors ++= Seq(
