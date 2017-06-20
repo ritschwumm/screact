@@ -19,14 +19,14 @@ class RefDebugger(what:String) {
 	def add(target:AnyRef) {
 		val	ref	= new  WeakReference(target, queue)
 		refs	=	ref :: refs
-		println(what + "\t+\t" + refs.size)
+		println(what + "\t+\t" + refs.size.toString)
 	}
 	
 	private def work() {
 		while (true) {
 			val	ref	= queue.remove()
 			refs	= refs filterNot { _ == ref }
-			println(what + "\t-\t" + refs.size)
+			println(what + "\t-\t" + refs.size.toString)
 		}
 	}
 }
