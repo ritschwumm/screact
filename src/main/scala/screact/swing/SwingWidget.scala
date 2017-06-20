@@ -15,6 +15,7 @@ object SwingWidget {
 		val	events		= new SourceEvents[T]
 		// BETTER call this at some time
 		val disposable	= connect(events.emit)
+		val _ = disposable
 		events
 	}
 	
@@ -48,6 +49,7 @@ object SwingWidget {
 				events emit getter()
 			}
 		}
+		val _ = dispose
 		
 		events
 	}

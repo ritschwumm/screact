@@ -11,7 +11,8 @@ private trait Sinks {
 	def clear():Unit
 }
 
-private final object NoSinks extends Sinks {
+// TODO unused why the warning if not restricted to screact?
+private[screact] final object NoSinks extends Sinks {
 	val all:Set[Node]	= Set.empty
 	def add(node:Node) {}
 	def remove(node:Node) {}

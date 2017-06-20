@@ -160,11 +160,15 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def when(func: =>Boolean):Events[T]	=
 			this filter { _ => func }
 	
-	final def trueUnit(implicit ev:T=>Boolean):Events[Unit]	=
-			this collect { case true => () }
+	final def trueUnit(implicit ev:T=>Boolean):Events[Unit]	= {
+		val _ = ev
+		this collect { case true => () }
+	}
 		
-	final def falseUnit(implicit ev:T=>Boolean):Events[Unit]	=
-			this collect { case false => () }
+	final def falseUnit(implicit ev:T=>Boolean):Events[Unit]	= {
+		val _ = ev
+		this collect { case false => () }
+	}
 	
 	// combine with signals
 		
@@ -254,7 +258,8 @@ trait Events[+T] extends Reactive[Unit,T] {
 		var	todo	= count
 		events {
 			// need to access message every time to avoid loss of connection
-			var	value	= message
+			val	value	= message
+			val _ 		= value
 			if (todo != 0) {
 				todo	-= 1
 				None

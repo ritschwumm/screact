@@ -19,7 +19,7 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 	
 	// NOTE without keeping strong references to the source Nodes like this we loose connections
 	/** Nodes this Reactive reads from */
-	private var sources	= mutable.ArrayBuffer[Node]()
+	private val sources	= mutable.ArrayBuffer[Node]()
 	
 	/** Nodes reading data from this Reactive */
 	private[screact] val sinks	= engine.newHasSinks()
@@ -47,6 +47,7 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 		
 		// just to keep sources alive during this update cycle
 		val oldSources	= sources
+		val _ 			= oldSources
 		// NOTE i'm already in the queue, so even if i get reranked this will not affect whether i'm scheduled or not
 		removeSelfFromSources()
 		

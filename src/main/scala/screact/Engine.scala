@@ -110,7 +110,7 @@ final class Engine extends Logging {
 	//## dependency callbacks
 	
 	// dynamic variable
-	private var	readCallbacks	= mutable.Stack.empty[Effect[Node]]
+	private val	readCallbacks	= mutable.Stack.empty[Effect[Node]]
 	
 	// used in decoupled calculations
 	private [screact] def withoutReader[T](block: =>T):T	=
