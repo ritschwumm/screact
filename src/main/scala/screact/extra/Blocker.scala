@@ -14,7 +14,7 @@ final class Blocker {
 	}
 	
 	def attempt[T](block: =>T):Option[T]	=
-			state == 0 guard block
+			state == 0 option block
 	
 	// def attemptExclusive[T](block: =>T):Option[T]	=
 	// 		attempt { exclusive { block } }
