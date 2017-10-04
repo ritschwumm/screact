@@ -14,7 +14,7 @@ object Events {
 			
 	def multiOccurs[T](in:ISeq[Events[T]]):Events[ISeq[T]]	=
 			events {
-				in collapseMap { _.message } guardBy { _.nonEmpty }
+				in collapseMap { _.message } optionBy { _.nonEmpty }
 			}
 }
 
