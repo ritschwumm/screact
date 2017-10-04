@@ -51,7 +51,7 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 		// NOTE i'm already in the queue, so even if i get reranked this will not affect whether i'm scheduled or not
 		removeSelfFromSources()
 		
-		/**
+		/*
 		called back from the parent when we read it so
 		we can notify it about us depending on it
 		and update our rank
