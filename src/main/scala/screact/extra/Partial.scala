@@ -7,7 +7,7 @@ import screact._
 
 object Partial {
 	/** edit a total part of an object */
-	def apply[S,T](master:Signal[S], select:TLens[S,T]):Partial[S,T]	=
+	def apply[S,T](master:Signal[S], select:Lens[S,T]):Partial[S,T]	=
 			new Partial[S,T] {
 				def container:Signal[S]	= master
 				
@@ -25,7 +25,7 @@ object Partial {
 	in these cases the editor component is fed with default values
 	and it's change events are ignored.
 	*/
-	def masterDetail[S,T](master:Signal[S], select:Signal[Option[TLens[S,T]]], default:T):Partial[S,T]	=
+	def masterDetail[S,T](master:Signal[S], select:Signal[Option[Lens[S,T]]], default:T):Partial[S,T]	=
 			new Partial[S,T] {
 				def container:Signal[S]	= master
 				

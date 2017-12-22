@@ -12,8 +12,8 @@ trait Emitter[T] extends Disposable { outer =>
 	def emit(value:T):Unit
 	
 	final def xmap[S](bijection:Bijection[S,T]):Emitter[S]	= new Emitter[S] {
-		val events	= outer.events map bijection.read
-		def emit(it:S) { outer emit (bijection write it) }
+		val events	= outer.events map bijection.put
+		def emit(it:S) { outer emit (bijection get it) }
 	}
 	
 	def dispose() {

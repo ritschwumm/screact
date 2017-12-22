@@ -16,12 +16,12 @@ trait Cell[T] extends Disposable { outer =>
 	}
 	
 	final def xmap[S](bijection:Bijection[S,T]):Cell[S]	= new Cell[S] {
-		val signal	= outer.signal map bijection.read
-		def set(it:S) { outer set (bijection write it) }
+		val signal	= outer.signal map bijection.put
+		def set(it:S) { outer set (bijection get it) }
 		override def dispose()	{ signal.dispose() }
 	}
 	
-	final def view[U](lens:TLens[T,U]):Cell[U]	= new Cell[U] {
+	final def view[U](lens:Lens[T,U]):Cell[U]	= new Cell[U] {
 		val signal		= outer.signal map lens.get
 		def set(it:U) 	{ outer modify (lens put (_, it)) }
 		override def dispose()	{ signal.dispose() }
