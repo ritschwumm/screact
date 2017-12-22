@@ -14,7 +14,7 @@ private final class Target[T](effect:Effect[T], source:Reactive[_,T]) extends No
 		}
 		catch { case e:Exception	=>
 			// TODO move logging into the Domain
-			ERROR("update failed", this, e)
+			ERROR("update failed", this.toString, e)
 		}
 		Unchanged
 	}

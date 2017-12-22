@@ -24,10 +24,10 @@ private final class SourceSignal[T](initial:T) extends Signal[T] with Logging { 
 						// TODO move logging into the Domain
 						ERROR(
 							"cannot set a signal twice within the same update cycle",
-							origin,
-							x,
-							cur,
-							value
+							origin.toString,
+							x.toString,
+							cur.toString,
+							value.toString
 						)
 						None
 				}

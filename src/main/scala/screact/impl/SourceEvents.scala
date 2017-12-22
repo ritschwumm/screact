@@ -21,9 +21,9 @@ private final class SourceEvents[T] extends Events[T] with Logging { outer =>
 					// TODO move logging into the Domain
 					ERROR(
 						"cannot emit an event twice within the same update cycle",
-						origin,
-						x,
-						value
+						origin.toString,
+						x.toString,
+						value.toString
 					)
 					None
 			}

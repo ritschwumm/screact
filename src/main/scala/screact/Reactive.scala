@@ -83,7 +83,7 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 					false
 				case e:Exception	=>
 					// TODO move logging into the Domain
-					ERROR("calculate failed", this, origin, e)
+					ERROR("calculate failed", this.toString, origin.toString, e)
 					true
 			}
 		}
