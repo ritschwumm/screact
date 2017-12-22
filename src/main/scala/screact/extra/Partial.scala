@@ -15,7 +15,7 @@ object Partial {
 						master map select.get
 					
 				def putter(detail:Events[T]):Events[Endo[S]]	=
-						detail map select.putter
+						detail map select.set
 			}
 			
 	/**
@@ -36,7 +36,7 @@ object Partial {
 						
 				def putter(detail:Events[T]):Events[Endo[S]]	=
 						detail snapshot select collect {
-							case (detail, Some(view)) => view putter detail
+							case (detail, Some(view)) => view set detail
 						}
 			}
 			
