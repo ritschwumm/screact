@@ -23,7 +23,7 @@ object Partial {
 	the lens signal selects which part is edited
 	and might be None if no detail is selected for editing.
 	in these cases the editor component is fed with default values
-	and it's change events are ignored.
+	and its change events are ignored.
 	*/
 	def masterDetail[S,T](master:Signal[S], select:Signal[Option[Lens[S,T]]], default:T):Partial[S,T]	=
 			new Partial[S,T] {
