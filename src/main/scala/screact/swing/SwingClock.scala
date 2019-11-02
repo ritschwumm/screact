@@ -14,8 +14,6 @@ import screact._
 object SwingClock {
 	private val timer	= new Timer(true)
 
-	def apply(cycle:MilliDuration):Events[MilliInstant] = apply(cycle, cycle)
-
 	/*
 	NOTE this doesn't work as desired if there are any hard references to output.events left:
 	-	Swing tends to keep hard references to JFrames around.
