@@ -7,7 +7,7 @@ import scutil.log._
 private final class Target[T](effect:Effect[T], source:Reactive[_,T]) extends Node with Disposable with Logging {
 	val sinks	= NoSinks
 	val	rank	= Integer.MAX_VALUE
-	
+
 	def update():Update	= {
 		try {
 			source.msg foreach effect
@@ -18,15 +18,15 @@ private final class Target[T](effect:Effect[T], source:Reactive[_,T]) extends No
 		}
 		Unchanged
 	}
-	
+
 	// TODO deal with overflows
 	private [screact] def pushDown(rank:Int) {}
-	
+
 	def reset() {}
-	
+
 	def dispose() {
 		source.sinks remove this
 	}
-	
+
 	source.sinks add this
 }

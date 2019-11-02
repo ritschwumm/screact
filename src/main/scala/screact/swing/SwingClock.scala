@@ -13,9 +13,9 @@ import screact._
 /** emits time events at regular intervals */
 object SwingClock {
 	private val timer	= new Timer(true)
-	
+
 	def apply(cycle:MilliDuration):Events[MilliInstant] = apply(cycle, cycle)
-	
+
 	/*
 	NOTE this doesn't work as desired if there are any hard references to output.events left:
 	-	Swing tends to keep hard references to JFrames around.
@@ -26,16 +26,16 @@ object SwingClock {
 	*/
 	def apply(cycle:MilliDuration, delay:MilliDuration):Events[MilliInstant] = {
 		require(insideEDT, "SwingClock may not be constructed outside the EDT")
-		
+
 		val output		= new SourceEvents[MilliInstant]
 		val outputRef	= new WeakReference(output)
-		
+
 		val task	= new MyTimerTask(outputRef)
 		timer schedule (task, delay.millis, cycle.millis)
-		
+
 		output
 	}
-	
+
 	private class MyTimerTask(outputRef:WeakReference[SourceEvents[MilliInstant]]) extends TimerTask {
 		def run() {
 			val alive	= edtWait {
@@ -51,7 +51,7 @@ object SwingClock {
 			}
 		}
 	}
-	
+
 	def repeat[T](cycle:MilliDuration, delay:MilliDuration, input:Events[Option[T]]):Events[T] =
 			input.filterOption orElse
 			(input flatMap { _ cata (never, SwingClock(cycle, delay) tag _) })

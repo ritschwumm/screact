@@ -5,7 +5,7 @@ private[screact] trait Node {
 	val engine	= Engine.access
 	/** where this node was created in the source code */
 	val origin	= engine.clientCall
-	
+
 	/** order of updates, higher values means "later" */
 	private[screact] def rank:Int
 	/** Nodes reading data from this Reactive */
@@ -17,6 +17,6 @@ private[screact] trait Node {
 	private [screact] def pushDown(rank:Int):Unit
 	/** called on all updated nodes at the end of an update cycle */
 	private[screact] def reset():Unit
-	
+
 	private[screact] val id:Long	= engine registerNode this
 }

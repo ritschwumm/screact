@@ -6,7 +6,7 @@ import java.lang.ref._
 class RefDebugger(what:String) {
 	val	queue	= new ReferenceQueue[AnyRef]
 	var refs	= List[Reference[_]]()
-	
+
 	def start() {
 		val	thread	= new Thread {
 			override def run() {
@@ -15,13 +15,13 @@ class RefDebugger(what:String) {
 		}
 		thread.start
 	}
-	
+
 	def add(target:AnyRef) {
 		val	ref	= new  WeakReference(target, queue)
 		refs	=	ref :: refs
 		println(what + "\t+\t" + refs.size.toString)
 	}
-	
+
 	private def work() {
 		while (true) {
 			val	ref	= queue.remove()

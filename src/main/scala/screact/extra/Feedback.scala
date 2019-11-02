@@ -9,7 +9,7 @@ object Feedback {
 		changes observe state.set
 		(editor, state)
 	}
-	
+
 	def localEvents[T,S](mkEditor:Events[S]=>(T,Events[S]))(implicit ob:Observing):(T,Events[S])	= {
 		val state				= emitter[S]
 		val (editor,changes)	= mkEditor(state)

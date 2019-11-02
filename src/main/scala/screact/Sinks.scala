@@ -25,17 +25,17 @@ private object HasSinks {
 
 private final class HasSinks(cache:SinksCache) extends Sinks {
 	private val ids	= new mutable.LongMap[AnyRef]
-	
+
 	def all:Set[Node]	= ids.keySet.toSet collapseMap cache.lookup
-	
+
 	def add(node:Node) {
 		ids	+= (node.id -> HasSinks.sentinel)
 	}
-	
+
 	def remove(node:Node) {
 		ids	-= node.id
 	}
-	
+
 	def clear() {
 		ids.clear()
 	}

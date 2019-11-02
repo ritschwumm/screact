@@ -6,12 +6,12 @@ import scutil.log._
 /** root of a propagation tree */
 private final class SourceEvents[T] extends Events[T] with Logging { outer =>
 	var	msg:Option[T]	= None
-	
+
 	/** schedules as an external event */
 	def emit(value:T) {
 		engine schedule thunk { emitImpl(value) }
 	}
-	
+
 	private def emitImpl(value:T):Option[Node]	=
 			msg match {
 				case None	=>
@@ -27,14 +27,14 @@ private final class SourceEvents[T] extends Events[T] with Logging { outer =>
 					)
 					None
 			}
-	
+
 	// msg does not change in here
 	def calculate() {}
-	
+
 	def reset() {
 		msg	= None
 	}
-	
+
 	// not necessary, we don't have dependencies
 	// init()
 }
