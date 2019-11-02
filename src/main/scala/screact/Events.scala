@@ -7,12 +7,12 @@ import scutil.lang._
 
 object Events {
 	// (in foldLeft never[T]) { _ orElse _ }
-	def multiOrElse[T](in:ISeq[Events[T]]):Events[T]	=
+	def multiOrElse[T](in:Seq[Events[T]]):Events[T]	=
 			events {
 				(in collapseMap { _.message }).headOption
 			}
 
-	def multiOccurs[T](in:ISeq[Events[T]]):Events[ISeq[T]]	=
+	def multiOccurs[T](in:Seq[Events[T]]):Events[Seq[T]]	=
 			events {
 				in collapseMap { _.message } optionBy { _.nonEmpty }
 			}
