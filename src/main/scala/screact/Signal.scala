@@ -64,7 +64,7 @@ trait Signal[+T] extends Reactive[T,T] {
 
 	final def flatMapCell[U](func:T=>Cell[U]):Cell[U]	= new Cell[U] {
 		val signal	= screact.signal { func(current).current }
-		def set(it:U) { func(current) set it }
+		def set(it:U):Unit	= { func(current) set it }
 	}
 
 	final def flattenCell[U](implicit ev:T=>Cell[U]):Cell[U]	=

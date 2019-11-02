@@ -7,22 +7,22 @@ class RefDebugger(what:String) {
 	val	queue	= new ReferenceQueue[AnyRef]
 	var refs	= List[Reference[_]]()
 
-	def start() {
+	def start():Unit	= {
 		val	thread	= new Thread {
-			override def run() {
+			override def run():Unit	= {
 				work()
 			}
 		}
 		thread.start
 	}
 
-	def add(target:AnyRef) {
+	def add(target:AnyRef):Unit	= {
 		val	ref	= new  WeakReference(target, queue)
 		refs	=	ref :: refs
 		println(what + "\t+\t" + refs.size.toString)
 	}
 
-	private def work() {
+	private def work():Unit	= {
 		while (true) {
 			val	ref	= queue.remove()
 			refs	= refs filterNot { _ == ref }

@@ -40,22 +40,22 @@ final class Engine extends Logging {
 	private var updating	= false
 
 	// NOTE could schedule multiple first-entry nodes
-	private[screact] def schedule(node:Scheduled) {
+	private[screact] def schedule(node:Scheduled):Unit	= {
 		external	+= node
 		scheduleLoop()
 	}
 
 	// delayed and new external events are immediately re-scheduled
-	private def scheduleLoop() {
+	private def scheduleLoop():Unit	= {
 		while (!updating && external.nonEmpty) {
 			scheduleInternal()
 		}
 	}
 
-	private def scheduleInternal() {
+	private def scheduleInternal():Unit	= {
 		try  {
 			updating	= true
-			val	internal	= external collapseMap { _ apply () }
+			val	internal	= external collapseMap { _.apply() }
 			external.clear()
 			// this may schedule new delayed events, those are treated as external
 			updateCycle(internal)
@@ -73,12 +73,12 @@ final class Engine extends Logging {
 	//## update cycle
 
 	// BETTER start should be an immutable Set
-	private def updateCycle(start:Iterable[Node]) {
+	private def updateCycle(start:Iterable[Node]):Unit	= {
 		val done	= mutable.Set.empty[Node]
 		val	queue	= new NodeQueue
 		queue insertMany start
 		while (queue.nonEmpty) {
-			val	head	= queue extract () getOrError "oops, empty queue"
+			val	head	= queue.extract() getOrError "oops, empty queue"
 			if (!(done contains head)) {
 				head.update() match {
 					case Changed	=>
@@ -122,7 +122,7 @@ final class Engine extends Logging {
 		finally { readCallbacks.pop() }
 	}
 
-	private[screact] def notifyReader(node:Node) {
+	private[screact] def notifyReader(node:Node):Unit	= {
 		if (readCallbacks.nonEmpty) {
 			readCallbacks top node
 		}

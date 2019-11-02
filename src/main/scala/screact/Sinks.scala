@@ -14,9 +14,9 @@ private trait Sinks {
 // TODO unused why the warning if not restricted to screact?
 private[screact] final object NoSinks extends Sinks {
 	val all:Set[Node]	= Set.empty
-	def add(node:Node) {}
-	def remove(node:Node) {}
-	def clear() {}
+	def add(node:Node):Unit	= {}
+	def remove(node:Node):Unit	= {}
+	def clear():Unit	= {}
 }
 
 private object HasSinks {
@@ -28,15 +28,15 @@ private final class HasSinks(cache:SinksCache) extends Sinks {
 
 	def all:Set[Node]	= ids.keySet.toSet collapseMap cache.lookup
 
-	def add(node:Node) {
+	def add(node:Node):Unit	= {
 		ids	+= (node.id -> HasSinks.sentinel)
 	}
 
-	def remove(node:Node) {
+	def remove(node:Node):Unit	= {
 		ids	-= node.id
 	}
 
-	def clear() {
+	def clear():Unit	= {
 		ids.clear()
 	}
 }

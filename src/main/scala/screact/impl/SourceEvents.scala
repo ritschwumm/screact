@@ -8,7 +8,7 @@ private final class SourceEvents[T] extends Events[T] with Logging { outer =>
 	var	msg:Option[T]	= None
 
 	/** schedules as an external event */
-	def emit(value:T) {
+	def emit(value:T):Unit	= {
 		engine schedule thunk { emitImpl(value) }
 	}
 
@@ -29,9 +29,9 @@ private final class SourceEvents[T] extends Events[T] with Logging { outer =>
 			}
 
 	// msg does not change in here
-	def calculate() {}
+	def calculate():Unit	= {}
 
-	def reset() {
+	def reset():Unit	= {
 		msg	= None
 	}
 

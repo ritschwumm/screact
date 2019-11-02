@@ -1,8 +1,8 @@
 name			:= "screact"
 organization	:= "de.djini"
-version			:= "0.172.0"
+version			:= "0.173.0"
 
-scalaVersion	:= "2.12.10"
+scalaVersion	:= "2.13.1"
 scalacOptions	++= Seq(
 	"-deprecation",
 	"-unchecked",
@@ -13,15 +13,14 @@ scalacOptions	++= Seq(
 	// "-language:dynamics",
 	// "-language:experimental.macros"
 	"-feature",
-	"-Ywarn-unused-import",
 	"-Xfatal-warnings",
 	"-Xlint"
 )
 
 conflictManager		:= ConflictManager.strict withOrganization "^(?!(org\\.scala-lang|org\\.scala-js)(\\..*)?)$"
 libraryDependencies	++= Seq(
-	"de.djini"	%% "scutil-core"	% "0.160.0"	% "compile",
-	"de.djini"	%% "scutil-swing"	% "0.160.0"	% "compile"
+	"de.djini"	%% "scutil-core"	% "0.161.0"	% "compile",
+	"de.djini"	%% "scutil-swing"	% "0.161.0"	% "compile"
 )
 
 wartremoverErrors ++= Seq(

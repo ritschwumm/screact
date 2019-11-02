@@ -5,14 +5,14 @@ private final class CalculationSignal[T](next: =>T) extends Signal[T] {
 	var	cur:T			= _
 	var msg:Option[T]	= None
 
-	def calculate() {
+	def calculate():Unit	= {
 		val	old	= cur
 		cur	= next
 		if (cur == old)	return
 		msg	= Some(cur)
 	}
 
-	def reset() {
+	def reset():Unit	= {
 		msg = None
 	}
 

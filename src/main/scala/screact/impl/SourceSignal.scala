@@ -9,7 +9,7 @@ private final class SourceSignal[T](initial:T) extends Signal[T] with Logging { 
 	var msg:Option[T]	= None
 
 	/** schedules as an external event */
-	def set(value:T) {
+	def set(value:T):Unit	= {
 		engine schedule thunk { setImpl(value) }
 	}
 
@@ -37,9 +37,9 @@ private final class SourceSignal[T](initial:T) extends Signal[T] with Logging { 
 			}
 
 	// msg does not change in here
-	def calculate() {}
+	def calculate():Unit	= {}
 
-	def reset() {
+	def reset():Unit	= {
 		msg	= None
 	}
 

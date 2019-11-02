@@ -227,7 +227,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 
 	final def unsum[U,V](implicit ev:T=>Either[U,V]):(Events[U],Events[V])	=
 			(	events { message flatMap { it:T => ev(it).left.toOption		} },
-				events { message flatMap { it:T => ev(it).right.toOption	} }
+				events { message flatMap { it:T => ev(it).toOption	} }
 			)
 
 	final def partition(func:T=>Boolean):(Events[T],Events[T])	=

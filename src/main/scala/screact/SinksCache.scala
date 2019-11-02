@@ -20,7 +20,7 @@ private final class SinksCache {
 		nodes get id flatMap { ref => Option(ref.get) }
 	}
 
-	def gc() {
+	def gc():Unit	= {
 		nodes	= nodes filterNot { _._2.get eq null }
 	}
 }

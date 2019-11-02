@@ -35,7 +35,7 @@ object SwingClock {
 	}
 
 	private class MyTimerTask(outputRef:WeakReference[SourceEvents[MilliInstant]]) extends TimerTask {
-		def run() {
+		def run():Unit	= {
 			val alive	= edtWait {
 				val output	= outputRef.get
 				val alive	= (output ne null) && !output.disposed

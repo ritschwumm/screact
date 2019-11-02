@@ -4,11 +4,11 @@ package screact
 private final class CalculationEvents[T](next: =>Option[T]) extends Events[T] {
 	var msg:Option[T]	= None
 
-	def calculate() {
+	def calculate():Unit	= {
 		msg = next
 	}
 
-	def reset() {
+	def reset():Unit	= {
 		msg = None
 	}
 

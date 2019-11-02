@@ -36,7 +36,7 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 		Changed
 	}
 
-	protected final def init() {
+	protected final def init():Unit	= {
 		updateInternal(false)
 	}
 
@@ -56,7 +56,7 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 		we can notify it about us depending on it
 		and update our rank
 		*/
-		def readCallback(source:Node) {
+		def readCallback(source:Node):Unit	= {
 			val	sourceRank	= source.rank
 			if (sourceRank >= rankVar) {
 				rankVar	= sourceRank + 1
@@ -108,7 +108,7 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 
 	final def disposed:Boolean	= disposedFlag
 
-	final def dispose() {
+	final def dispose():Unit	= {
 		if (engine != Engine.access)	throw WrongThreadException
 		disposedFlag	= true
 		sources.clear()
@@ -116,18 +116,18 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 	}
 
 	/** recursively increase the rank of all dependent nodes */
-	private [screact] def pushDown(newRank:Int) {
+	private [screact] def pushDown(newRank:Int):Unit	= {
 		if (newRank > rank) {
 			rankVar	= newRank
 			pushDownDependents()
 		}
 	}
 
-	private def pushDownDependents() {
+	private def pushDownDependents():Unit	= {
 		sinks.all foreach { _ pushDown rankVar+1 }
 	}
 
-	private def removeSelfFromSources() {
+	private def removeSelfFromSources():Unit	= {
 		sources foreach { _.sinks remove this }
 		sources.clear()
 	}

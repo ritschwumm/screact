@@ -20,11 +20,11 @@ private final class Target[T](effect:Effect[T], source:Reactive[_,T]) extends No
 	}
 
 	// TODO deal with overflows
-	private [screact] def pushDown(rank:Int) {}
+	private [screact] def pushDown(rank:Int):Unit	= {}
 
-	def reset() {}
+	def reset():Unit	= {}
 
-	def dispose() {
+	def dispose():Unit	= {
 		source.sinks remove this
 	}
 

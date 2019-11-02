@@ -5,7 +5,7 @@ final class PrintDebug {
 	val indent	= "  "
 	var prefix	= ""
 
-	def line(msg: =>String) {
+	def line(msg: =>String):Unit	= {
 		println(prefix + "!!! " + msg)
 	}
 

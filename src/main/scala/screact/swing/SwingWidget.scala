@@ -62,7 +62,7 @@ object SwingWidget {
 
 		var delayed:Option[T]	= None
 
-		def emit(value:T) {
+		def emit(value:T):Unit	= {
 			val	first	= delayed.isEmpty
 			delayed		= Some(value)
 			if (first) {
@@ -77,9 +77,9 @@ object SwingWidget {
 			}
 		}
 
-		def calculate() {}	// msg does not change in here
+		def calculate():Unit	= {}	// msg does not change in here
 
-		def reset() {
+		def reset():Unit	= {
 			msg		= None
 		}
 

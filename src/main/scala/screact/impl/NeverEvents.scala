@@ -5,10 +5,10 @@ private final class NeverEvents[T] extends Events[T] {
 	val msg:Option[T]	= None
 
 	// msg does not change in here
-	def calculate() {}
+	def calculate():Unit	= {}
 
 	// msg stays None anyway
-	def reset() {}
+	def reset():Unit	= {}
 
 	// not necessary, we don't have dependencies
 	// init()
