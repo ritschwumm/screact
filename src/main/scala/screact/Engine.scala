@@ -142,8 +142,8 @@ final class Engine extends Logging {
 
 	// BETTER use something like scutil.SourceLocation
 	def clientCall:Option[StackTraceElement] =
-			Thread.currentThread.getStackTrace find { it => clientClass(it.getClassName) }
+		Thread.currentThread.getStackTrace find { it => clientClass(it.getClassName) }
 
 	private def clientClass(name:String):Boolean	=
-			!(ignoredPrefixes exists { name startsWith _ })
+		!(ignoredPrefixes exists { name startsWith _ })
 }

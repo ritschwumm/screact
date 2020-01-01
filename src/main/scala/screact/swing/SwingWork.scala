@@ -8,12 +8,12 @@ import screact._
 
 object SwingWork {
 	def async[T](in:Events[Thunk[T]])(implicit observing:Observing):Events[T]	=
-			emitter[T] doto { out =>
-				in observe { input =>
-					swingWorker[T](
-						input,
-						out.emit
-					)
-				}
+		emitter[T] doto { out =>
+			in observe { input =>
+				swingWorker[T](
+					input,
+					out.emit
+				)
 			}
+		}
 }

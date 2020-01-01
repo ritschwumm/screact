@@ -13,20 +13,20 @@ private final class SourceEvents[T] extends Events[T] with Logging { outer =>
 	}
 
 	private def emitImpl(value:T):Option[Node]	=
-			msg match {
-				case None	=>
-					msg	= Some(value)
-					Some(outer)
-				case Some(x) =>
-					// TODO move logging into the Domain
-					ERROR(
-						"cannot emit an event twice within the same update cycle",
-						origin.toString,
-						x.toString,
-						value.toString
-					)
-					None
-			}
+		msg match {
+			case None	=>
+				msg	= Some(value)
+				Some(outer)
+			case Some(x) =>
+				// TODO move logging into the Domain
+				ERROR(
+					"cannot emit an event twice within the same update cycle",
+					origin.toString,
+					x.toString,
+					value.toString
+				)
+				None
+		}
 
 	// msg does not change in here
 	def calculate():Unit	= {}

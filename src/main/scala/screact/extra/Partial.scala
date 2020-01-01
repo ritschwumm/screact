@@ -8,15 +8,15 @@ import screact._
 object Partial {
 	/** edit a total part of an object */
 	def apply[S,T](master:Signal[S], select:Lens[S,T]):Partial[S,T]	=
-			new Partial[S,T] {
-				def container:Signal[S]	= master
+		new Partial[S,T] {
+			def container:Signal[S]	= master
 
-				val get:Signal[T]	=
-						master map select.get
+			val get:Signal[T]	=
+				master map select.get
 
-				def putter(detail:Events[T]):Events[Endo[S]]	=
-						detail map select.set
-			}
+			def putter(detail:Events[T]):Events[Endo[S]]	=
+				detail map select.set
+		}
 
 	/**
 	edit a selected part of an object:
@@ -26,33 +26,33 @@ object Partial {
 	and its change events are ignored.
 	*/
 	def masterDetail[S,T](master:Signal[S], select:Signal[Option[Lens[S,T]]], default:T):Partial[S,T]	=
-			new Partial[S,T] {
-				def container:Signal[S]	= master
+		new Partial[S,T] {
+			def container:Signal[S]	= master
 
-				val get:Signal[T]	=
-						signal {
-							select.current cata (default, _ get master.current)
-						}
+			val get:Signal[T]	=
+				signal {
+					select.current cata (default, _ get master.current)
+				}
 
-				def putter(detail:Events[T]):Events[Endo[S]]	=
-						detail snapshot select collect {
-							case (detail, Some(view)) => view set detail
-						}
-			}
+			def putter(detail:Events[T]):Events[Endo[S]]	=
+				detail snapshot select collect {
+					case (detail, Some(view)) => view set detail
+				}
+		}
 
 	/*
 	// edit a maybe-existing part of an object
 	def partial[S,T](master:Signal[S], select:PLens[S,T], default:T):Partial[S,T]	=
-			new Partial[S,T] {
-				def container:Signal[S]	= master
+		new Partial[S,T] {
+			def container:Signal[S]	= master
 
-				val get:Signal[T]	=
-						master map { it => select get it getOrElse default }
+			val get:Signal[T]	=
+				master map { it => select get it getOrElse default }
 
-				// NOTE this emits events that don't change anything
-				def putter(detail:Events[T]):Events[Endo[S]]	=
-						detail map { dv => (select putter dv).toEndo }
-			}
+			// NOTE this emits events that don't change anything
+			def putter(detail:Events[T]):Events[Endo[S]]	=
+				detail map { dv => (select putter dv).toEndo }
+		}
 	*/
 }
 

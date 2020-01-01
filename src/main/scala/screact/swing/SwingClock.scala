@@ -36,14 +36,15 @@ object SwingClock {
 
 	private class MyTimerTask(outputRef:WeakReference[SourceEvents[MilliInstant]]) extends TimerTask {
 		def run():Unit	= {
-			val alive	= edtWait {
-				val output	= outputRef.get
-				val alive	= (output ne null) && !output.disposed
-				if (alive) {
-					output emit MilliInstant.now
+			val alive	=
+				edtWait {
+					val output	= outputRef.get
+					val alive	= (output ne null) && !output.disposed
+					if (alive) {
+						output emit MilliInstant.now
+					}
+					alive
 				}
-				alive
-			}
 			if (!alive) {
 				cancel()
 			}
@@ -51,6 +52,6 @@ object SwingClock {
 	}
 
 	def repeat[T](cycle:MilliDuration, delay:MilliDuration, input:Events[Option[T]]):Events[T] =
-			input.filterOption orElse
-			(input flatMap { _ cata (never, SwingClock(cycle, delay) tag _) })
+		input.filterOption orElse
+		(input flatMap { _ cata (never, SwingClock(cycle, delay) tag _) })
 }
