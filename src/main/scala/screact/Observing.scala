@@ -19,19 +19,21 @@ trait Observing {
 
 	private[screact] def observe[T](source:Reactive[_,T], effect:Effect[T]):Disposable = {
 		val	target	= new Target(effect, source)
-		lazy val connection:Disposable	= disposable {
-			target.dispose()
-			connections	-= connection
-		}
+		lazy val connection:Disposable	=
+			Disposable delay {
+				target.dispose()
+				connections	-= connection
+			}
 		connections += connection
 		connection
 	}
 
 	private[screact] def observeOnce[T](source:Reactive[_,T], effect:Effect[T]):Disposable = {
-		lazy val connection:Disposable	= observe(source, { value:T =>
-			effect(value)
-			connection.dispose()
-		})
+		lazy val connection:Disposable	=
+			observe(source, { value:T =>
+				effect(value)
+				connection.dispose()
+			})
 		connection
 	}
 
