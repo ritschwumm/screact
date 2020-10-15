@@ -136,8 +136,8 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 	//## Observing forwarder
 
 	def observe(effect:Effect[Msg])(implicit observing:Observing):Disposable =
-			observing observe (this, effect)
+			observing.observe(this, effect)
 
 	def observeOnce(effect:Effect[Msg])(implicit observing:Observing):Disposable =
-			observing observeOnce (this, effect)
+			observing.observeOnce(this, effect)
 }

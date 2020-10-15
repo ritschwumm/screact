@@ -197,7 +197,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 	/** emits in the next update cycle */
 	final def delay(implicit observing:Observing):Events[T]	= {
 		val	out	= new SourceEvents[T]
-		observing observe (this, out.emit)
+		observing.observe(this, out.emit)
 		out
 	}
 

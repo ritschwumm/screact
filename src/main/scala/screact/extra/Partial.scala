@@ -31,7 +31,7 @@ object Partial {
 
 			val get:Signal[T]	=
 				signal {
-					select.current cata (default, _ get master.current)
+					select.current.cata(default, _ get master.current)
 				}
 
 			def putter(detail:Events[T]):Events[Endo[S]]	=
@@ -69,5 +69,5 @@ trait Partial[S,T] {
 	def putter(detail:Events[T]):Events[Endo[S]]
 
 	def put(detail:Events[T]):Events[S]	=
-			Putter on (container, putter(detail))
+			Putter.on(container, putter(detail))
 }

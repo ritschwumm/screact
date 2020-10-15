@@ -29,7 +29,7 @@ object SwingClock {
 		val outputRef	= new WeakReference(output)
 
 		val task	= new MyTimerTask(outputRef)
-		timer schedule (task, delay.millis, cycle.millis)
+		timer.schedule(task, delay.millis, cycle.millis)
 
 		output
 	}
@@ -41,7 +41,7 @@ object SwingClock {
 					val output	= outputRef.get
 					val alive	= (output ne null) && !output.disposed
 					if (alive) {
-						output emit MilliInstant.now
+						output emit MilliInstant.now()
 					}
 					alive
 				}
@@ -53,5 +53,5 @@ object SwingClock {
 
 	def repeat[T](cycle:MilliDuration, delay:MilliDuration, input:Events[Option[T]]):Events[T] =
 		input.filterOption orElse
-		(input flatMap { _ cata (never, SwingClock(cycle, delay) tag _) })
+		(input flatMap { _.cata(never, SwingClock(cycle, delay) tag _) })
 }
