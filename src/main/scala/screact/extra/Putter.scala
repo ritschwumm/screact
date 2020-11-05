@@ -1,14 +1,12 @@
 package screact.extra
 
-import scutil.lang._
-
 import screact._
 
 object Putter {
-	def multiOn[T](value:Signal[T], putters:Iterable[Events[Endo[T]]]):Events[T]	=
+	def multiOn[T](value:Signal[T], putters:Iterable[Events[T=>T]]):Events[T]	=
 		on(value, sum(putters))
 
-	def on[T](value:Signal[T], puts:Events[Endo[T]]):Events[T]	=
+	def on[T](value:Signal[T], puts:Events[T=>T]):Events[T]	=
 		(puts snapshotWith value) { _(_) }
 
 	//------------------------------------------------------------------------------
@@ -17,9 +15,9 @@ object Putter {
 	// orElse with never forms a monoid so
 	// Events[Endo[T]] with never[Endo[T]] forms a monoid, too
 
-	def zero[T]:Events[Endo[T]]	= never[Endo[T]]
+	def zero[T]:Events[T=>T]	= never[T=>T]
 
-	def append[T](a:Events[Endo[T]], b:Events[Endo[T]]):Events[Endo[T]]	=
+	def append[T](a:Events[T=>T], b:Events[T=>T]):Events[T=>T]	=
 		events {
 			(a.message, b.message) match {
 				case (Some(a),Some(b))	=> Some(a andThen b)
@@ -29,6 +27,6 @@ object Putter {
 			}
 		}
 
-	def sum[T](in:Iterable[Events[Endo[T]]]):Events[Endo[T]]	=
+	def sum[T](in:Iterable[Events[T=>T]]):Events[T=>T]	=
 		(in foldLeft zero[T])(append)
 }

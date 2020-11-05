@@ -11,7 +11,7 @@ trait Cell[T] extends Disposable { outer =>
 	val signal:Signal[T]
 	def set(value:T):Unit
 
-	final def modify(func:Endo[T]):Unit	= {
+	final def modify(func:T=>T):Unit	= {
 		set(func(signal.current))
 	}
 

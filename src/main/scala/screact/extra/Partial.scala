@@ -1,6 +1,6 @@
 package screact.extra
 
-import scutil.base.implicits._
+import scutil.core.implicits._
 import scutil.lang._
 
 import screact._
@@ -14,7 +14,7 @@ object Partial {
 			val get:Signal[T]	=
 				master map select.get
 
-			def putter(detail:Events[T]):Events[Endo[S]]	=
+			def putter(detail:Events[T]):Events[S=>S]	=
 				detail map select.set
 		}
 
@@ -34,7 +34,7 @@ object Partial {
 					select.current.cata(default, _ get master.current)
 				}
 
-			def putter(detail:Events[T]):Events[Endo[S]]	=
+			def putter(detail:Events[T]):Events[S=>S]	=
 				detail snapshot select collect {
 					case (detail, Some(view)) => view set detail
 				}
@@ -67,7 +67,7 @@ trait Partial[S,T] {
 
 	def get:Signal[T]
 
-	def putter(detail:Events[T]):Events[Endo[S]]
+	def putter(detail:Events[T]):Events[S=>S]
 
 	def put(detail:Events[T]):Events[S]	=
 			Putter.on(container, putter(detail))
