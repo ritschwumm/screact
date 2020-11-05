@@ -77,16 +77,32 @@ trait Signal[+T] extends Reactive[T,T] {
 
 	// other
 
+	@deprecated("use tuple", "0.199.0")
 	final def zip[U](that:Signal[U]):Signal[(T,U)]	=
-		zipWith(that) { (_,_) }
+		tuple(that)
 
+	final def tuple[U](that:Signal[U]):Signal[(T,U)]	=
+		map2(that) { (_,_) }
+
+	@deprecated("use map2", "0.199.0")
 	final def zipWith[U,V](that:Signal[U])(func:(T,U)=>V):Signal[V]	=
+		map2(that)(func)
+
+	final def map2[U,V](that:Signal[U])(func:(T,U)=>V):Signal[V]	=
 		signal { func(this.current, that.current) }
 
+	@deprecated("use tupleBy", "0.199.0")
 	final def zipBy[U](func:T=>U):Signal[(T,U)]	=
+		tupleBy(func)
+
+	final def tupleBy[U](func:T=>U):Signal[(T,U)]	=
 		this map { it => (it,func(it)) }
 
+	@deprecated("use untuple", "0.199.0")
 	final def unzip[U,V](implicit ev:T=>(U,V)):(Signal[U],Signal[V])	=
+		untuple
+
+	final def untuple[U,V](implicit ev:T=>(U,V)):(Signal[U],Signal[V])	=
 		(map(_._1), map(_._2))
 
 	final def choose[U](sourceTrue:Signal[U], sourceFalse:Signal[U])(implicit ev:T=>Boolean):Signal[U]	=

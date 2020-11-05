@@ -203,12 +203,20 @@ trait Events[+T] extends Reactive[Unit,T] {
 
 	// other
 
-	/** emits an event if both inputs fire at the same instant */
+	@deprecated("use tuple", "0.199.0")
 	final def zip[U](that:Events[U]):Events[(T,U)] =
-		zipWith(that) { (_,_) }
+		tuple(that)
 
 	/** emits an event if both inputs fire at the same instant */
+	final def tuple[U](that:Events[U]):Events[(T,U)] =
+		map2(that) { (_,_) }
+
+	@deprecated("use map2", "0.199.0")
 	final def zipWith[U,V](that:Events[U])(func:(T,U)=>V):Events[V]	=
+		map2(that)(func)
+
+	/** emits an event if both inputs fire at the same instant */
+	final def map2[U,V](that:Events[U])(func:(T,U)=>V):Events[V]	=
 		events {
 			(this.message, that.message) match {
 				case (Some(thisMessage),Some(thatMessage))	=> Some(func(thisMessage, thatMessage))
@@ -216,10 +224,18 @@ trait Events[+T] extends Reactive[Unit,T] {
 			}
 		}
 
+	@deprecated("use tupleBy", "0.199.0")
 	final def zipBy[U](func:T=>U):Events[(T,U)]	=
+		tupleBy(func)
+
+	final def tupleBy[U](func:T=>U):Events[(T,U)]	=
 		this map { it => (it,func(it)) }
 
+	@deprecated("use untuple", "0.199.0")
 	final def unzip[U,V](implicit ev:T=>(U,V)):(Events[U],Events[V])	=
+		untuple
+
+	final def untuple[U,V](implicit ev:T=>(U,V)):(Events[U],Events[V])	=
 		(map(_._1), map(_._2))
 
 	final def sum[U](that:Events[U]):Events[Either[T,U]]	=
