@@ -42,6 +42,7 @@ object Partial {
 
 	/*
 	// edit a maybe-existing part of an object
+	// NOTE PLens is now Optional
 	def partial[S,T](master:Signal[S], select:PLens[S,T], default:T):Partial[S,T]	=
 		new Partial[S,T] {
 			def container:Signal[S]	= master
