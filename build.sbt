@@ -1,6 +1,8 @@
+Global / onChangedBuildSource := ReloadOnSourceChanges
+
 name			:= "screact"
 organization	:= "de.djini"
-version			:= "0.202.0"
+version			:= "0.203.0"
 
 scalaVersion	:= "2.13.4"
 scalacOptions	++= Seq(
@@ -14,8 +16,8 @@ scalacOptions	++= Seq(
 
 conflictManager		:= ConflictManager.strict withOrganization "^(?!(org\\.scala-lang|org\\.scala-js)(\\..*)?)$"
 libraryDependencies	++= Seq(
-	"de.djini"	%% "scutil-jdk"	% "0.190.0"	% "compile",
-	"de.djini"	%% "scutil-gui"	% "0.190.0"	% "compile"
+	"de.djini"	%% "scutil-jdk"	% "0.191.0"	% "compile",
+	"de.djini"	%% "scutil-gui"	% "0.191.0"	% "compile"
 )
 
 wartremoverErrors ++= Seq(
