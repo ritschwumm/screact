@@ -41,8 +41,10 @@ trait Signal[+T] extends Reactive[T,T] {
 	final def ap[U,V](source:Signal[U])(implicit ev:T=>U=>V):Signal[V]	=
 		signal { ev(current)(source.current) }
 
+	/*
 	final def pa[U](func:Signal[T=>U]):Signal[U]	=
 		signal { func.current apply current }
+	*/
 
 	// monad
 

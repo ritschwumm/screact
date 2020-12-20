@@ -97,12 +97,14 @@ trait Events[+T] extends Reactive[Unit,T] {
 		}
 		yield func(arg)
 
+	/*
 	final def pa[U](func:Events[T=>U]):Events[U]	=
 		for {
 			func	<- func
 			arg		<- this
 		}
 		yield func(arg)
+	*/
 
 	// monad
 
