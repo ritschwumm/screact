@@ -26,7 +26,7 @@ private object HasSinks {
 private final class HasSinks(cache:SinksCache) extends Sinks {
 	private val ids	= new mutable.LongMap[AnyRef]
 
-	def all:Set[Node]	= ids.keySet.toSet collapseMap cache.lookup
+	def all:Set[Node]	= ids.keySet.toSet mapFilter cache.lookup
 
 	def add(node:Node):Unit	= {
 		ids	+= (node.id -> HasSinks.sentinel)

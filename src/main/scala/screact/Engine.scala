@@ -55,7 +55,7 @@ final class Engine extends Logging {
 	private def scheduleInternal():Unit	= {
 		try  {
 			updating	= true
-			val	internal	= external collapseMap { _.apply() }
+			val	internal	= external mapFilter { _.apply() }
 			external.clear()
 			// this may schedule new delayed events, those are treated as external
 			updateCycle(internal)

@@ -9,12 +9,12 @@ object Events {
 	// (in foldLeft never[T]) { _ orElse _ }
 	def multiOrElse[T](in:Seq[Events[T]]):Events[T]	=
 		events {
-			(in collapseMap { _.message }).headOption
+			(in mapFilter { _.message }).headOption
 		}
 
 	def multiOccurs[T](in:Seq[Events[T]]):Events[Seq[T]]	=
 		events {
-			in collapseMap { _.message } optionBy { _.nonEmpty }
+			in mapFilter { _.message } optionBy { _.nonEmpty }
 		}
 }
 
@@ -77,11 +77,19 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def collect[U](func:PartialFunction[T,U]):Events[U]	=
 		events { message collect func }
 
+	@deprecated("use mapFilter", "0.207.0")
 	final def filterMap[U](func:T=>Option[U]):Events[U] =
+		mapFilter(func)
+
+	final def mapFilter[U](func:T=>Option[U]):Events[U] =
 		this map func collect { case Some(value) => value }
 
+	@deprecated("use flattenOption", "0.207.0")
 	final def filterOption[U](implicit ev:T=>Option[U]):Events[U] =
-		this filterMap ev
+		flattenOption
+
+	final def flattenOption[U](implicit ev:T=>Option[U]):Events[U] =
+		mapFilter(ev)
 
 	// functor
 
@@ -205,17 +213,13 @@ trait Events[+T] extends Reactive[Unit,T] {
 
 	// other
 
-	@deprecated("use tuple", "0.199.0")
-	final def zip[U](that:Events[U]):Events[(T,U)] =
-		tuple(that)
+	@deprecated("use product", "0.207.0")
+	final def tuple[U](that:Events[U]):Events[(T,U)] =
+		product(that)
 
 	/** emits an event if both inputs fire at the same instant */
-	final def tuple[U](that:Events[U]):Events[(T,U)] =
+	final def product[U](that:Events[U]):Events[(T,U)] =
 		map2(that) { (_,_) }
-
-	@deprecated("use map2", "0.199.0")
-	final def zipWith[U,V](that:Events[U])(func:(T,U)=>V):Events[V]	=
-		map2(that)(func)
 
 	/** emits an event if both inputs fire at the same instant */
 	final def map2[U,V](that:Events[U])(func:(T,U)=>V):Events[V]	=
@@ -226,16 +230,12 @@ trait Events[+T] extends Reactive[Unit,T] {
 			}
 		}
 
-	@deprecated("use tupleBy", "0.199.0")
-	final def zipBy[U](func:T=>U):Events[(T,U)]	=
-		tupleBy(func)
-
+	@deprecated("use fproduct", "0.207.0")
 	final def tupleBy[U](func:T=>U):Events[(T,U)]	=
-		this map { it => (it,func(it)) }
+		fproduct(func)
 
-	@deprecated("use untuple", "0.199.0")
-	final def unzip[U,V](implicit ev:T=>(U,V)):(Events[U],Events[V])	=
-		untuple
+	final def fproduct[U](func:T=>U):Events[(T,U)]	=
+		this map { it => (it,func(it)) }
 
 	final def untuple[U,V](implicit ev:T=>(U,V)):(Events[U],Events[V])	=
 		(map(_._1), map(_._2))

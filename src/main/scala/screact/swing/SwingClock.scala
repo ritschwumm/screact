@@ -52,6 +52,6 @@ object SwingClock {
 	}
 
 	def repeat[T](cycle:MilliDuration, delay:MilliDuration, input:Events[Option[T]]):Events[T] =
-		input.filterOption orElse
+		input.flattenOption orElse
 		(input flatMap { _.cata(never, SwingClock(cycle, delay) tag _) })
 }

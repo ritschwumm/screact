@@ -79,30 +79,22 @@ trait Signal[+T] extends Reactive[T,T] {
 
 	// other
 
-	@deprecated("use tuple", "0.199.0")
-	final def zip[U](that:Signal[U]):Signal[(T,U)]	=
-		tuple(that)
-
+	@deprecated("use product", "0.207.0")
 	final def tuple[U](that:Signal[U]):Signal[(T,U)]	=
-		map2(that) { (_,_) }
+		product(that)
 
-	@deprecated("use map2", "0.199.0")
-	final def zipWith[U,V](that:Signal[U])(func:(T,U)=>V):Signal[V]	=
-		map2(that)(func)
+	final def product[U](that:Signal[U]):Signal[(T,U)]	=
+		map2(that) { (_,_) }
 
 	final def map2[U,V](that:Signal[U])(func:(T,U)=>V):Signal[V]	=
 		signal { func(this.current, that.current) }
 
-	@deprecated("use tupleBy", "0.199.0")
-	final def zipBy[U](func:T=>U):Signal[(T,U)]	=
-		tupleBy(func)
-
+	@deprecated("use fproduct", "0.207.0")
 	final def tupleBy[U](func:T=>U):Signal[(T,U)]	=
-		this map { it => (it,func(it)) }
+		fproduct(func)
 
-	@deprecated("use untuple", "0.199.0")
-	final def unzip[U,V](implicit ev:T=>(U,V)):(Signal[U],Signal[V])	=
-		untuple
+	final def fproduct[U](func:T=>U):Signal[(T,U)]	=
+		this map { it => (it,func(it)) }
 
 	final def untuple[U,V](implicit ev:T=>(U,V)):(Signal[U],Signal[V])	=
 		(map(_._1), map(_._2))
