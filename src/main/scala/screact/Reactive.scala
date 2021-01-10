@@ -6,7 +6,7 @@ import scutil.lang._
 import scutil.log._
 
 /** base trait for reactive values with some current value (may be Unit) and emitting events. */
-trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
+trait Reactive[+Cur,+Msg] extends Node with AutoCloseable with Logging {
 	private var rankVar:Int				= 0
 	private var disposedFlag:Boolean	= false
 
@@ -108,7 +108,7 @@ trait Reactive[+Cur,+Msg] extends Node with Disposable with Logging {
 
 	final def disposed:Boolean	= disposedFlag
 
-	final def dispose():Unit	= {
+	final def close():Unit	= {
 		if (engine != Engine.access)	throw WrongThreadException
 		disposedFlag	= true
 		sources.clear()

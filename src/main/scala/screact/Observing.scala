@@ -21,7 +21,7 @@ trait Observing {
 		val	target	= new Target(effect, source)
 		lazy val connection:Disposable	=
 			Disposable delay {
-				target.dispose()
+				target.close()
 				connections	-= connection
 			}
 		connections += connection

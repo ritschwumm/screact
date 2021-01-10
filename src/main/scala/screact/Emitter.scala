@@ -7,7 +7,7 @@ object Emitter {
 }
 
 /** An Emitter is a source for Events and can trigger an update cycle in the Engine */
-trait Emitter[T] extends Disposable { outer =>
+trait Emitter[T] extends AutoCloseable { outer =>
 	val events:Events[T]
 	def emit(value:T):Unit
 
@@ -16,7 +16,7 @@ trait Emitter[T] extends Disposable { outer =>
 		def emit(it:S):Unit	= { outer emit (bijection get it) }
 	}
 
-	def dispose():Unit	= {
-		events.dispose()
+	def close():Unit	= {
+		events.close()
 	}
 }

@@ -7,7 +7,7 @@ object Cell {
 }
 
 /** An Cell is a source for a Signal and can trigger an update cycle in the Engine */
-trait Cell[T] extends Disposable { outer =>
+trait Cell[T] extends AutoCloseable { outer =>
 	val signal:Signal[T]
 	def set(value:T):Unit
 
@@ -18,16 +18,16 @@ trait Cell[T] extends Disposable { outer =>
 	final def xmap[S](bijection:Bijection[S,T]):Cell[S]	= new Cell[S] {
 		val signal	= outer.signal map bijection.set
 		def set(it:S):Unit	= { outer set (bijection get it) }
-		override def dispose():Unit	=	{ signal.dispose() }
+		override def close():Unit	=	{ signal.close() }
 	}
 
 	final def view[U](lens:Lens[T,U]):Cell[U]	= new Cell[U] {
 		val signal		= outer.signal map lens.get
 		def set(it:U):Unit	= 	{ outer modify (lens set it) }
-		override def dispose():Unit	=	{ signal.dispose() }
+		override def close():Unit	=	{ signal.close() }
 	}
 
-	def dispose():Unit	= {
-		signal.dispose()
+	def close():Unit	= {
+		signal.close()
 	}
 }
