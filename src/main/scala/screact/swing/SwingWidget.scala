@@ -9,8 +9,8 @@ import screact.extra.Blocker
 /** used to connect Swing widgets to the reactive world */
 object SwingWidget {
 	/** simply emit events from some Connectable */
-	def events[T](connect:Effect[T]=>Disposable):Events[T]	= {
-		require(insideEDT, "SwingWidget events may not be constructed outside the EDT")
+	def events[T](connect:Effect[T]=>Disposer):Events[T]	= {
+		require(insideEdt, "SwingWidget events may not be constructed outside the EDT")
 
 		val	events		= new SourceEvents[T]
 		// BETTER call this at some time
@@ -20,8 +20,8 @@ object SwingWidget {
 	}
 
 	/** Signal values by some getter, changing on events from some Connectable */
-	def signal[T,X](connect:Effect[X]=>Disposable, getter:Thunk[T]):Signal[T]	=
-			events(connect) tag getter() hold getter()
+	def signal[T,X](connect:Effect[X]=>Disposer, getter:Thunk[T]):Signal[T]	=
+		events(connect) tag getter() hold getter()
 
 	/**
 	wraps a swing component to take an input Signal and mit change Events.
@@ -29,8 +29,8 @@ object SwingWidget {
 	change events are only fired on user interaction, but not on changes
 	of the input signal.
 	*/
-	def transformer[S,T,X](input:Signal[S], connect:Effect[X]=>Disposable, getter:Thunk[T], setter:Effect[S])(implicit ob:Observing):Events[T]	= {
-		require(insideEDT, "SwingWidget transformer may not be constructed outside the EDT")
+	def transformer[S,T,X](input:Signal[S], connect:Effect[X]=>Disposer, getter:Thunk[T], setter:Effect[S])(implicit ob:Observing):Events[T]	= {
+		require(insideEdt, "SwingWidget transformer may not be constructed outside the EDT")
 
 		val blocker	= new Blocker
 		val events	= new WidgetEvents[T]

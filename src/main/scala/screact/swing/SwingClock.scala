@@ -23,7 +23,7 @@ object SwingClock {
 		nulling a reference from an object to an Events object helps.
 	*/
 	def apply(cycle:MilliDuration, delay:MilliDuration):Events[MilliInstant] = {
-		require(insideEDT, "SwingClock may not be constructed outside the EDT")
+		require(insideEdt, "SwingClock may not be constructed outside the EDT")
 
 		val output		= new SourceEvents[MilliInstant]
 		val outputRef	= new WeakReference(output)
@@ -37,14 +37,14 @@ object SwingClock {
 	private class MyTimerTask(outputRef:WeakReference[SourceEvents[MilliInstant]]) extends TimerTask {
 		def run():Unit	= {
 			val alive	=
-				edtWait {
+				edt {
 					val output	= outputRef.get
 					val alive	= (output ne null) && !output.disposed
 					if (alive) {
 						output emit MilliInstant.now()
 					}
 					alive
-				}
+				}()
 			if (!alive) {
 				cancel()
 			}

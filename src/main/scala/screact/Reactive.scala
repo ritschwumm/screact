@@ -135,9 +135,9 @@ trait Reactive[+Cur,+Msg] extends Node with AutoCloseable with Logging {
 	//------------------------------------------------------------------------------
 	//## Observing forwarder
 
-	def observe(effect:Effect[Msg])(implicit observing:Observing):Disposable =
-			observing.observe(this, effect)
+	def observe(effect:Effect[Msg])(implicit observing:Observing):Disposer =
+		observing.observe(this, effect)
 
-	def observeOnce(effect:Effect[Msg])(implicit observing:Observing):Disposable =
-			observing.observeOnce(this, effect)
+	def observeOnce(effect:Effect[Msg])(implicit observing:Observing):Disposer =
+		observing.observeOnce(this, effect)
 }

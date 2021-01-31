@@ -105,6 +105,6 @@ trait Signal[+T] extends Reactive[T,T] {
 	//------------------------------------------------------------------------------
 	//## Observing forwarder
 
-	def observeNow(effect:Effect[T])(implicit observing:Observing):Disposable	=
+	def observeNow(effect:Effect[T])(implicit observing:Observing):Disposer	=
 		observing.observeNow(this, effect)
 }
