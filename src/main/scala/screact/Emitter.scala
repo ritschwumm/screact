@@ -1,5 +1,7 @@
 package screact
 
+import scala.language.implicitConversions
+
 import scutil.lang._
 
 object Emitter {

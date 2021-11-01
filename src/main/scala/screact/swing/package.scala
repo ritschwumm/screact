@@ -1,5 +1,7 @@
 package screact
 
+import scala.language.implicitConversions
+
 import screact.swing.ext._
 
 package object swing {
