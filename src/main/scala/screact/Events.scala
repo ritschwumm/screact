@@ -85,10 +85,10 @@ trait Events[+T] extends Reactive[Unit,T] {
 		this map func collect { case Some(value) => value }
 
 	@deprecated("use flattenOption", "0.207.0")
-	final def filterOption[U](implicit ev:T=>Option[U]):Events[U] =
+	final def filterOption[U](implicit ev:T <:< Option[U]):Events[U] =
 		flattenOption
 
-	final def flattenOption[U](implicit ev:T=>Option[U]):Events[U] =
+	final def flattenOption[U](implicit ev:T <:< Option[U]):Events[U] =
 		mapFilter(ev)
 
 	// functor
@@ -98,7 +98,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 
 	// applicative functor
 
-	final def ap[U,V](source:Events[U])(implicit ev:T=>U=>V):Events[V]	=
+	final def ap[U,V](source:Events[U])(implicit ev:T <:< (U=>V)):Events[V]	=
 		for {
 			func	<- this map ev
 			arg		<- source
@@ -119,7 +119,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def flatMap[U](func:T=>Events[U]):Events[U] =
 		(this map func hold never).flattenEvents
 
-	final def flatten[U](implicit ev:T=>Events[U]):Events[U]	=
+	final def flatten[U](implicit ev:T <:< Events[U]):Events[U]	=
 		this flatMap ev
 
 	// monad to Signal
@@ -129,7 +129,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 			this.message map { it => func(it).current }
 		}
 
-	final def flattenSignal[U](implicit ev:T=>Signal[U]):Events[U]	=
+	final def flattenSignal[U](implicit ev:T <:< Signal[U]):Events[U]	=
 		this flatMapSignal ev
 
 	// monoid with never
@@ -170,12 +170,12 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def when(func: =>Boolean):Events[T]	=
 		this filter { _ => func }
 
-	final def trueUnit(implicit ev:T=>Boolean):Events[Unit]	= {
+	final def trueUnit(implicit ev:T <:< Boolean):Events[Unit]	= {
 		val _ = ev
 		this collect { case true => () }
 	}
 
-	final def falseUnit(implicit ev:T=>Boolean):Events[Unit]	= {
+	final def falseUnit(implicit ev:T <:< Boolean):Events[Unit]	= {
 		val _ = ev
 		this collect { case false => () }
 	}
@@ -237,13 +237,13 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def fproduct[U](func:T=>U):Events[(T,U)]	=
 		this map { it => (it,func(it)) }
 
-	final def untuple[U,V](implicit ev:T=>(U,V)):(Events[U],Events[V])	=
+	final def untuple[U,V](implicit ev:T <:< (U,V)):(Events[U],Events[V])	=
 		(map(_._1), map(_._2))
 
 	final def sum[U](that:Events[U]):Events[Either[T,U]]	=
 		(this map { Left(_) }) orElse (that map { Right(_) })
 
-	final def unsum[U,V](implicit ev:T=>Either[U,V]):(Events[U],Events[V])	=
+	final def unsum[U,V](implicit ev:T <:< Either[U,V]):(Events[U],Events[V])	=
 		(	events { message flatMap { it:T => ev(it).left.toOption		} },
 			events { message flatMap { it:T => ev(it).toOption	} }
 		)

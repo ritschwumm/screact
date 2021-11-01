@@ -26,7 +26,7 @@ final class OptionSignal[T](private val delegate:Signal[Option[T]]) { self =>
 			}
 		})
 
-	def flatten(implicit ev:T=>OptionSignal[T]):OptionSignal[T]	=
+	def flatten(implicit ev:T <:< OptionSignal[T]):OptionSignal[T]	=
 		flatMap(ev)
 
 	def filter(pred:Predicate[T]):OptionSignal[T]	=
