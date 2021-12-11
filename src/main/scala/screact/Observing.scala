@@ -10,14 +10,14 @@ collected before their last observer. Every class observing a Reactive must
 extend this trait.
 */
 trait Observing {
-	implicit protected val observing	= this
+	implicit protected val observing:Observing	= this
 
 	/** keeps hard references */
 	private val connections	= new mutable.ArrayBuffer[Disposer]
 
 	// used in Reactive and Signal
 
-	private[screact] def observe[T](source:Reactive[_,T], effect:Effect[T]):Disposer = {
+	private[screact] def observe[T](source:Reactive[?,T], effect:Effect[T]):Disposer = {
 		val	target	= new Target(effect, source)
 		lazy val connection:Disposer	=
 			Disposer delay {
@@ -28,9 +28,9 @@ trait Observing {
 		connection
 	}
 
-	private[screact] def observeOnce[T](source:Reactive[_,T], effect:Effect[T]):Disposer = {
+	private[screact] def observeOnce[T](source:Reactive[?,T], effect:Effect[T]):Disposer = {
 		lazy val connection:Disposer	=
-			observe(source, { value:T =>
+			observe(source, (value:T) => {
 				effect(value)
 				connection.dispose()
 			})

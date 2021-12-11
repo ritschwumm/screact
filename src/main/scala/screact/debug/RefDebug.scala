@@ -5,7 +5,7 @@ import java.lang.ref._
 /** debugging utility to show when some object is garbage-collected */
 class RefDebugger(what:String) {
 	val	queue	= new ReferenceQueue[AnyRef]
-	var refs	= List[Reference[_]]()
+	var refs	= List[Reference[?]]()
 
 	def start():Unit	= {
 		val	thread	= new Thread {

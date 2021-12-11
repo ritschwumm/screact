@@ -136,8 +136,8 @@ trait Events[+T] extends Reactive[Unit,T] {
 
 	final def orElse[U>:T](that:Events[U]):Events[U]	=
 		(this, that) match {
-			case (_,_:NeverEvents[_])	=> this
-			case (_:NeverEvents[_],_)	=> that
+			case (_,_:NeverEvents[?])	=> this
+			case (_:NeverEvents[?],_)	=> that
 			case _ =>
 				events {
 					// NOTE needs to access both message methods or registration fails!
@@ -244,8 +244,8 @@ trait Events[+T] extends Reactive[Unit,T] {
 		(this map { Left(_) }) orElse (that map { Right(_) })
 
 	final def unsum[U,V](implicit ev:T <:< Either[U,V]):(Events[U],Events[V])	=
-		(	events { message flatMap { it:T => ev(it).left.toOption		} },
-			events { message flatMap { it:T => ev(it).toOption	} }
+		(	events { message flatMap { (it:T) => ev(it).left.toOption	} },
+			events { message flatMap { (it:T) => ev(it).toOption		} }
 		)
 
 	final def partition(func:T=>Boolean):(Events[T],Events[T])	=

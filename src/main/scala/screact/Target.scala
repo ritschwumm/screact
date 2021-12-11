@@ -4,7 +4,7 @@ import scutil.lang._
 import scutil.log._
 
 /** A final target for events emitted by an Event. Targets always get notified after all other Nodes. */
-private final class Target[T](effect:Effect[T], source:Reactive[_,T]) extends Node with AutoCloseable with Logging {
+private final class Target[T](effect:Effect[T], source:Reactive[?,T]) extends Node with AutoCloseable with Logging {
 	val sinks	= NoSinks
 	val	rank	= Integer.MAX_VALUE
 
