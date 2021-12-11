@@ -1,6 +1,6 @@
 package screact.swing.ext
 
-import scutil.gui.SwingUtil._
+import scutil.gui.SwingUtil.*
 
 protected trait EdtReactive {
 	def readInEdt[T](block: =>T):T	=

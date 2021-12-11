@@ -2,7 +2,7 @@ package screact
 
 import scala.collection.mutable
 
-import scutil.core.implicits._
+import scutil.core.implicits.*
 
 private trait Sinks {
 	def all:Set[Node]

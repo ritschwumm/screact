@@ -1,6 +1,6 @@
 package screact.extra
 
-import scutil.core.implicits._
+import scutil.core.implicits.*
 
 /** a simple semaphore */
 final class Blocker {

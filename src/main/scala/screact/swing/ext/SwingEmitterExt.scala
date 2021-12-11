@@ -1,6 +1,6 @@
 package screact.swing.ext
 
-import screact._
+import screact.*
 
 final class SwingEmitterExt[T](delegate:Emitter[T]) extends EdtReactive {
 	/** ensure emit is called inside the EDT */

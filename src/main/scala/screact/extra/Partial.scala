@@ -1,9 +1,9 @@
 package screact.extra
 
-import scutil.core.implicits._
-import scutil.lang._
+import scutil.core.implicits.*
+import scutil.lang.*
 
-import screact._
+import screact.*
 
 object Partial {
 	/** edit a total part of an object */

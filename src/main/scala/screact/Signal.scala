@@ -1,6 +1,6 @@
 package screact
 
-import scutil.lang._
+import scutil.lang.*
 
 /** A Reactive with a current value emitting change events. change Events are emitted only if the value has changed. */
 trait Signal[+T] extends Reactive[T,T] {

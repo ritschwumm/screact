@@ -2,9 +2,9 @@ package screact
 
 import scala.collection.mutable
 
-import scutil.core.implicits._
-import scutil.lang._
-import scutil.log._
+import scutil.core.implicits.*
+import scutil.lang.*
+import scutil.log.*
 
 /** manages one Engine per Thread */
 object Engine {

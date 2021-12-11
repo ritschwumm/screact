@@ -1,6 +1,6 @@
 package screact.extra
 
-import screact._
+import screact.*
 
 object Feedback {
 	def localSignal[T,S](initial:S)(mkEditor:Signal[S]=>(T,Events[S]))(using ob:Observing):(T,Signal[S])	= {

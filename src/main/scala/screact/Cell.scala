@@ -2,7 +2,7 @@ package screact
 
 import scala.language.implicitConversions
 
-import scutil.lang._
+import scutil.lang.*
 
 object Cell {
 	implicit def asSignal[T](it:Cell[T]):Signal[T]	= it.signal

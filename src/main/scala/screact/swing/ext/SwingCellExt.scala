@@ -1,6 +1,6 @@
 package screact.swing.ext
 
-import screact._
+import screact.*
 
 final class SwingCellExt[T](delegate:Cell[T]) extends EdtReactive {
 	/** ensure current is called inside the EDT */

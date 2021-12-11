@@ -1,6 +1,6 @@
 package screact.extra
 
-import screact._
+import screact.*
 
 object Putter {
 	def multiOn[T](value:Signal[T], putters:Iterable[Events[T=>T]]):Events[T]	=

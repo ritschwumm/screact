@@ -2,7 +2,7 @@ package screact
 
 import scala.collection.mutable
 
-import scutil.lang._
+import scutil.lang.*
 
 /**
 Observing keeps hard references to observed Reactives so they are not garbage

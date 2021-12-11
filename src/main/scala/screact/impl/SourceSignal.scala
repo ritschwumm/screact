@@ -1,7 +1,7 @@
 package screact
 
-import scutil.lang._
-import scutil.log._
+import scutil.lang.*
+import scutil.log.*
 
 /** root of a propagation tree */
 private final class SourceSignal[T](initial:T) extends Signal[T] with Logging { outer =>

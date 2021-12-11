@@ -1,7 +1,7 @@
 package screact
 
-import scutil.lang._
-import scutil.log._
+import scutil.lang.*
+import scutil.log.*
 
 /** A final target for events emitted by an Event. Targets always get notified after all other Nodes. */
 private final class Target[T](effect:Effect[T], source:Reactive[?,T]) extends Node with AutoCloseable with Logging {

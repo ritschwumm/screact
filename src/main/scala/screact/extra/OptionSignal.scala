@@ -1,8 +1,8 @@
 package screact.extra
 
-import scutil.lang._
+import scutil.lang.*
 
-import screact._
+import screact.*
 
 // NOTE a monad transformer would make sense here
 

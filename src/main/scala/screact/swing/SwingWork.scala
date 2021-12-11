@@ -1,10 +1,10 @@
 package screact.swing
 
-import scutil.core.implicits._
-import scutil.lang._
-import scutil.gui.SwingUtil._
+import scutil.core.implicits.*
+import scutil.lang.*
+import scutil.gui.SwingUtil.*
 
-import screact._
+import screact.*
 
 object SwingWork {
 	def async[T](in:Events[Thunk[T]])(using observing:Observing):Events[T]	=

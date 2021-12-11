@@ -1,9 +1,9 @@
 package screact.swing
 
-import scutil.lang._
-import scutil.gui.SwingUtil._
+import scutil.lang.*
+import scutil.gui.SwingUtil.*
 
-import screact._
+import screact.*
 import screact.extra.Blocker
 
 /** used to connect Swing widgets to the reactive world */

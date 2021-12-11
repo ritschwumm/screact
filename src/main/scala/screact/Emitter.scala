@@ -2,7 +2,7 @@ package screact
 
 import scala.language.implicitConversions
 
-import scutil.lang._
+import scutil.lang.*
 
 object Emitter {
 	implicit def asEvents[T](it:Emitter[T]):Events[T]	= it.events

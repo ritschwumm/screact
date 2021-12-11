@@ -1,6 +1,6 @@
 package screact.debug
 
-import java.lang.ref._
+import java.lang.ref.*
 
 /** debugging utility to show when some object is garbage-collected */
 class RefDebugger(what:String) {

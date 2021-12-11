@@ -4,11 +4,11 @@ import java.lang.ref.WeakReference
 import java.util.Timer
 import java.util.TimerTask
 
-import scutil.core.implicits._
-import scutil.gui.SwingUtil._
-import scutil.time._
+import scutil.core.implicits.*
+import scutil.gui.SwingUtil.*
+import scutil.time.*
 
-import screact._
+import screact.*
 
 /** emits time events at regular intervals */
 object SwingClock {

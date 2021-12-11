@@ -2,8 +2,8 @@ package screact
 
 import scala.collection.mutable
 
-import scutil.lang._
-import scutil.log._
+import scutil.lang.*
+import scutil.log.*
 
 /** base trait for reactive values with some current value (may be Unit) and emitting events. */
 trait Reactive[+Cur,+Msg] extends Node with AutoCloseable with Logging {
