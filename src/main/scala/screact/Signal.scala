@@ -74,7 +74,7 @@ trait Signal[+T] extends Reactive[T,T] {
 
 	// delayable
 
-	final def delay[U>:T](initial:U)(implicit observing:Observing):Signal[U]	=
+	final def delay[U>:T](initial:U)(using observing:Observing):Signal[U]	=
 		edge.delay hold initial
 
 	// other
@@ -105,6 +105,6 @@ trait Signal[+T] extends Reactive[T,T] {
 	//------------------------------------------------------------------------------
 	//## Observing forwarder
 
-	def observeNow(effect:Effect[T])(implicit observing:Observing):Disposer	=
+	def observeNow(effect:Effect[T])(using observing:Observing):Disposer	=
 		observing.observeNow(this, effect)
 }

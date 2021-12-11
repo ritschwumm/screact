@@ -29,7 +29,7 @@ object SwingWidget {
 	change events are only fired on user interaction, but not on changes
 	of the input signal.
 	*/
-	def transformer[S,T,X](input:Signal[S], connect:Effect[X]=>Disposer, getter:Thunk[T], setter:Effect[S])(implicit ob:Observing):Events[T]	= {
+	def transformer[S,T,X](input:Signal[S], connect:Effect[X]=>Disposer, getter:Thunk[T], setter:Effect[S])(using ob:Observing):Events[T]	= {
 		require(insideEdt, "SwingWidget transformer may not be constructed outside the EDT")
 
 		val blocker	= new Blocker

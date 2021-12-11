@@ -10,7 +10,7 @@ collected before their last observer. Every class observing a Reactive must
 extend this trait.
 */
 trait Observing {
-	implicit protected val observing:Observing	= this
+	protected given observing:Observing	= this
 
 	/** keeps hard references */
 	private val connections	= new mutable.ArrayBuffer[Disposer]
