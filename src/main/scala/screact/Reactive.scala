@@ -25,15 +25,15 @@ trait Reactive[+Cur,+Msg] extends Node with AutoCloseable with Logging {
 	private[screact] val sinks	= engine.newHasSinks()
 
 	private[screact] final def update():Update = {
-		if (disposedFlag)	return Unchanged
+		if (disposedFlag)	return Update.Unchanged
 
 		val	ok	= updateInternal(true)
-		if (!ok)			return Rerank
+		if (!ok)			return Update.Rerank
 
 		val	notify	= msg.isDefined
-		if (!notify)		return Unchanged
+		if (!notify)		return Update.Unchanged
 
-		Changed
+		Update.Changed
 	}
 
 	protected final def init():Unit	= {

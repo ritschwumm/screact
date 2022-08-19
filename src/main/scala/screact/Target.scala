@@ -16,7 +16,7 @@ private final class Target[T](effect:Effect[T], source:Reactive[?,T]) extends No
 			// TODO move logging into the Domain
 			ERROR("update failed", this.toString, e)
 		}
-		Unchanged
+		Update.Unchanged
 	}
 
 	// TODO deal with overflows

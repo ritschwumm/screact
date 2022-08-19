@@ -81,14 +81,14 @@ final class Engine extends Logging {
 			val	head	= queue.extract() getOrError "oops, empty queue"
 			if (!(done contains head)) {
 				head.update() match {
-					case Changed	=>
+					case Update.Changed	=>
 						// value has changed, unschedule the head node and schedule the head node's dependencies
 						queue insertMany head.sinks.all
 						done	+= head
-					case Unchanged	=>
+					case Update.Unchanged	=>
 						// value has not changed, unschedule the head and be done.
 						done	+= head
-					case Rerank	=>
+					case Update.Rerank	=>
 						// re-ranked. re-insert the head into the queue.
 						queue insert head
 				}
