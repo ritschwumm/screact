@@ -79,19 +79,11 @@ trait Signal[+T] extends Reactive[T,T] {
 
 	// other
 
-	@deprecated("use product", "0.207.0")
-	final def tuple[U](that:Signal[U]):Signal[(T,U)]	=
-		product(that)
-
 	final def product[U](that:Signal[U]):Signal[(T,U)]	=
 		map2(that) { (_,_) }
 
 	final def map2[U,V](that:Signal[U])(func:(T,U)=>V):Signal[V]	=
 		signal { func(this.current, that.current) }
-
-	@deprecated("use fproduct", "0.207.0")
-	final def tupleBy[U](func:T=>U):Signal[(T,U)]	=
-		fproduct(func)
 
 	final def fproduct[U](func:T=>U):Signal[(T,U)]	=
 		this map { it => (it,func(it)) }

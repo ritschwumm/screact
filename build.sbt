@@ -4,9 +4,9 @@ ThisBuild / versionScheme := Some("early-semver")
 
 name			:= "screact"
 organization	:= "de.djini"
-version			:= "0.244.0"
+version			:= "0.245.0"
 
-scalaVersion	:= "3.1.3"
+scalaVersion	:= "3.2.0"
 scalacOptions	++= Seq(
 	"-feature",
 	"-deprecation",
@@ -18,8 +18,8 @@ scalacOptions	++= Seq(
 
 conflictManager		:= ConflictManager.strict withOrganization "^(?!(org\\.scala-lang|org\\.scala-js)(\\..*)?)$"
 libraryDependencies	++= Seq(
-	"de.djini"	%% "scutil-jdk"	% "0.231.0"	% "compile",
-	"de.djini"	%% "scutil-gui"	% "0.231.0"	% "compile"
+	"de.djini"	%% "scutil-jdk"	% "0.232.0"	% "compile",
+	"de.djini"	%% "scutil-gui"	% "0.232.0"	% "compile"
 )
 
 wartremoverErrors ++= Seq(
@@ -43,7 +43,8 @@ wartremoverErrors ++= Seq(
 	Wart.ExplicitImplicitTypes,
 	Wart.LeakingSealed,
 	Wart.DefaultArguments,
-	Wart.Overloading,
+	// TODO should be enabled, but produces unfixable errors in signal/cell/emitter extensions
+	//Wart.Overloading,
 	//Wart.PublicInference,
 	//Wart.TraversableOps
 )

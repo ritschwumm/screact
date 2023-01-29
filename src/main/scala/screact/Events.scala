@@ -77,16 +77,8 @@ trait Events[+T] extends Reactive[Unit,T] {
 	final def collect[U](func:PartialFunction[T,U]):Events[U]	=
 		events { message collect func }
 
-	@deprecated("use mapFilter", "0.207.0")
-	final def filterMap[U](func:T=>Option[U]):Events[U] =
-		mapFilter(func)
-
 	final def mapFilter[U](func:T=>Option[U]):Events[U] =
 		this map func collect { case Some(value) => value }
-
-	@deprecated("use flattenOption", "0.207.0")
-	final def filterOption[U](using ev:T <:< Option[U]):Events[U] =
-		flattenOption
 
 	final def flattenOption[U](using ev:T <:< Option[U]):Events[U] =
 		mapFilter(ev)
@@ -213,10 +205,6 @@ trait Events[+T] extends Reactive[Unit,T] {
 
 	// other
 
-	@deprecated("use product", "0.207.0")
-	final def tuple[U](that:Events[U]):Events[(T,U)] =
-		product(that)
-
 	/** emits an event if both inputs fire at the same instant */
 	final def product[U](that:Events[U]):Events[(T,U)] =
 		map2(that) { (_,_) }
@@ -229,10 +217,6 @@ trait Events[+T] extends Reactive[Unit,T] {
 				case _										=> None
 			}
 		}
-
-	@deprecated("use fproduct", "0.207.0")
-	final def tupleBy[U](func:T=>U):Events[(T,U)]	=
-		fproduct(func)
 
 	final def fproduct[U](func:T=>U):Events[(T,U)]	=
 		this map { it => (it,func(it)) }

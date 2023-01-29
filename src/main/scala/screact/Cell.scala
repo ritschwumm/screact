@@ -1,12 +1,14 @@
 package screact
 
-import scala.language.implicitConversions
-
 import scutil.lang.*
+
+/*
+import scala.language.implicitConversions
 
 object Cell {
 	implicit def asSignal[T](it:Cell[T]):Signal[T]	= it.signal
 }
+*/
 
 /** An Cell is a source for a Signal and can trigger an update cycle in the Engine */
 trait Cell[T] extends AutoCloseable { outer =>
@@ -32,4 +34,8 @@ trait Cell[T] extends AutoCloseable { outer =>
 	def close():Unit	= {
 		signal.close()
 	}
+}
+
+extension [T](peer:Cell[T]) {
+	def current:T	= peer.signal.current
 }

@@ -1,12 +1,14 @@
 package screact
 
-import scala.language.implicitConversions
-
 import scutil.lang.*
+
+/*
+import scala.language.implicitConversions
 
 object Emitter {
 	implicit def asEvents[T](it:Emitter[T]):Events[T]	= it.events
 }
+*/
 
 /** An Emitter is a source for Events and can trigger an update cycle in the Engine */
 trait Emitter[T] extends AutoCloseable { outer =>
