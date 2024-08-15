@@ -16,7 +16,7 @@ final class PrintDebug {
 			block
 		}
 		finally {
-			prefix	= prefix substring indent.length
+			prefix	= prefix.substring(indent.length)
 			println(prefix + "<<< " + msg)
 		}
 	}

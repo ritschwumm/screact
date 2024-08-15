@@ -10,7 +10,7 @@ object SwingWork {
 	def async[T](in:Events[Thunk[T]])(using observing:Observing):Events[T]	=
 		emitter[T]
 		.doto { out =>
-			in observe { input =>
+			in.observe { input =>
 				swingWorker[T](
 					input,
 					out.emit

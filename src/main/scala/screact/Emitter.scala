@@ -16,8 +16,8 @@ trait Emitter[T] extends AutoCloseable { outer =>
 	def emit(value:T):Unit
 
 	final def xmap[S](bijection:Bijection[S,T]):Emitter[S]	= new Emitter[S] {
-		val events	= outer.events map bijection.set
-		def emit(it:S):Unit	= { outer emit (bijection get it) }
+		val events	= outer.events.map(bijection.set)
+		def emit(it:S):Unit	= { outer.emit(bijection.get(it)) }
 	}
 
 	def close():Unit	= {

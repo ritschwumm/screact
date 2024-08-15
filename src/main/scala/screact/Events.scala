@@ -9,12 +9,12 @@ object Events {
 	// (in foldLeft never[T]) { _ orElse _ }
 	def multiOrElse[T](in:Seq[Events[T]]):Events[T]	=
 		events {
-			(in mapFilter { _.message }).headOption
+			in.mapFilter(_.message).headOption
 		}
 
 	def multiOccurs[T](in:Seq[Events[T]]):Events[Seq[T]]	=
 		events {
-			in mapFilter { _.message } optionBy { _.nonEmpty }
+			in.mapFilter(_.message).optionBy(_.nonEmpty)
 		}
 }
 
@@ -29,7 +29,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 		// modify state only after evaluation of source nodes
 		var value	= initial
 		signal {
-			message foreach { msgval =>
+			message.foreach { msgval =>
 				value = msgval
 			}
 			value
@@ -41,7 +41,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 		// modify state only after evaluation of source nodes
 		var value	= initial
 		signal {
-			message foreach { msgval =>
+			message.foreach { msgval =>
 				value = func(value, msgval)
 			}
 			value
@@ -69,16 +69,16 @@ trait Events[+T] extends Reactive[Unit,T] {
 	// with a zero
 
 	final def filter(func:Predicate[T]):Events[T]	=
-		events { message filter func }
+		events { message.filter(func) }
 
 	final def filterNot(func:Predicate[T]):Events[T]	=
-		events { message filter !func }
+		events { message.filter(!func) }
 
 	final def collect[U](func:PartialFunction[T,U]):Events[U]	=
 		events { message collect func }
 
 	final def mapFilter[U](func:T=>Option[U]):Events[U] =
-		this map func collect { case Some(value) => value }
+		this.map(func).collect { case Some(value) => value }
 
 	final def flattenOption[U](using ev:T <:< Option[U]):Events[U] =
 		mapFilter(ev)
@@ -86,13 +86,13 @@ trait Events[+T] extends Reactive[Unit,T] {
 	// functor
 
 	final def map[U](func:T=>U):Events[U]	=
-		events { message map func }
+		events { message.map(func) }
 
 	// applicative functor
 
 	final def ap[U,V](source:Events[U])(using ev:T <:< (U=>V)):Events[V]	=
 		for {
-			func	<- this map ev
+			func	<- this.map(ev)
 			arg		<- source
 		}
 		yield func(arg)
@@ -109,10 +109,10 @@ trait Events[+T] extends Reactive[Unit,T] {
 	// monad
 
 	final def flatMap[U](func:T=>Events[U]):Events[U] =
-		(this map func hold never).flattenEvents
+		this.map(func).hold(never).flattenEvents
 
 	final def flatten[U](using ev:T <:< Events[U]):Events[U]	=
-		this flatMap ev
+		this.flatMap(ev)
 
 	// monad to Signal
 
@@ -122,7 +122,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 		}
 
 	final def flattenSignal[U](using ev:T <:< Signal[U]):Events[U]	=
-		this flatMapSignal ev
+		this.flatMapSignal(ev)
 
 	// monoid with never
 
@@ -154,13 +154,13 @@ trait Events[+T] extends Reactive[Unit,T] {
 	// combine with values
 
 	final def tag[U](that: =>U):Events[U]	=
-		this map { _ => that }
+		this.map { _ => that }
 
 	final def tagUnit:Events[Unit]	=
-		this map constant(())
+		this.tag(())
 
 	final def when(func: =>Boolean):Events[T]	=
-		this filter { _ => func }
+		this.filter { _ => func }
 
 	final def trueUnit(using ev:T <:< Boolean):Events[Unit]	= {
 		val _ = ev
@@ -184,14 +184,14 @@ trait Events[+T] extends Reactive[Unit,T] {
 		events {
 			val when	= this.message
 			val what	= that.current
-			when map { it => func(it, what) }
+			when.map { it => func(it, what) }
 		}
 
 	final def gate(that:Signal[Boolean]):Events[T]	=
 		events {
 			val when	= this.message
 			val gate	= that.current
-			when filter { _ => gate }
+			when.filter { _ => gate }
 		}
 
 	// delayable
@@ -219,22 +219,23 @@ trait Events[+T] extends Reactive[Unit,T] {
 		}
 
 	final def fproduct[U](func:T=>U):Events[(T,U)]	=
-		this map { it => (it,func(it)) }
+		this.map { it => (it,func(it)) }
 
 	final def untuple[U,V](using ev:T <:< (U,V)):(Events[U],Events[V])	=
 		(map(_._1), map(_._2))
 
 	final def sum[U](that:Events[U]):Events[Either[T,U]]	=
-		(this map { Left(_) }) orElse (that map { Right(_) })
+		this.map(Left(_)) `orElse` that.map(Right(_))
 
 	final def unsum[U,V](using ev:T <:< Either[U,V]):(Events[U],Events[V])	=
-		(	events { message flatMap { (it:T) => ev(it).left.toOption	} },
-			events { message flatMap { (it:T) => ev(it).toOption		} }
+		(	events { message.flatMap { (it:T) => ev(it).left.toOption	} },
+			events { message.flatMap { (it:T) => ev(it).toOption		} }
 		)
 
 	final def partition(func:T=>Boolean):(Events[T],Events[T])	=
-		(	events { message filter  func },
-			events { message filter !func }
+		(
+			events { message.filter(func)	},
+			events { message.filter(!func)	}
 		)
 
 	/** take the first count events, drop the rest */
@@ -261,7 +262,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 		events {
 			// need to access message every time to avoid loss of connection
 			val	value	= message
-			val _ 		= value
+			val _		= value
 			if (todo != 0) {
 				todo	-= 1
 				None

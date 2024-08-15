@@ -15,7 +15,7 @@ object Engine {
 		if (oldEngine ne null)	return oldEngine
 
 		val newEngine	= new Engine
-		threadLocal set newEngine
+		threadLocal.set(newEngine)
 		newEngine
 	}
 }
@@ -25,10 +25,10 @@ final class Engine extends Logging {
 	private val sinksCache	= new SinksCache
 
 	private[screact] def newHasSinks():Sinks	=
-			new HasSinks(sinksCache)
+		new HasSinks(sinksCache)
 
 	private [screact] def registerNode(node:Node):Long	=
-			sinksCache register node
+		sinksCache.register(node)
 
 	//------------------------------------------------------------------------------
 	//## scheduler entrypoint
@@ -55,7 +55,7 @@ final class Engine extends Logging {
 	private def scheduleInternal():Unit	= {
 		try  {
 			updating	= true
-			val	internal	= external mapFilter { _.apply() }
+			val	internal	= external.mapFilter { _.apply() }
 			external.clear()
 			// this may schedule new delayed events, those are treated as external
 			updateCycle(internal)
@@ -76,25 +76,25 @@ final class Engine extends Logging {
 	private def updateCycle(start:Iterable[Node]):Unit	= {
 		val done	= mutable.Set.empty[Node]
 		val	queue	= new NodeQueue
-		queue insertMany start
+		queue.insertMany(start)
 		while (queue.nonEmpty) {
-			val	head	= queue.extract() getOrError "oops, empty queue"
+			val	head	= queue.extract().getOrError("oops, empty queue")
 			if (!(done contains head)) {
 				head.update() match {
 					case Update.Changed	=>
 						// value has changed, unschedule the head node and schedule the head node's dependencies
-						queue insertMany head.sinks.all
+						queue.insertMany(head.sinks.all)
 						done	+= head
 					case Update.Unchanged	=>
 						// value has not changed, unschedule the head and be done.
 						done	+= head
 					case Update.Rerank	=>
 						// re-ranked. re-insert the head into the queue.
-						queue insert head
+						queue.insert(head)
 				}
 			}
 		}
-		done foreach { _.reset() }
+		done.foreach { _.reset() }
 
 		// to allow done nodes to be collected
 		val	doneSize	= done.size
@@ -114,17 +114,17 @@ final class Engine extends Logging {
 
 	// used in decoupled calculations
 	private [screact] def withoutReader[T](block: =>T):T	=
-			withReader((_:Node) => ())(block)
+		withReader((_:Node) => ())(block)
 
 	private [screact] def withReader[T](readCallback:Effect[Node])(block: =>T):T	= {
-		readCallbacks push readCallback
+		readCallbacks.push(readCallback)
 		try { block }
 		finally { readCallbacks.pop() }
 	}
 
 	private[screact] def notifyReader(node:Node):Unit	= {
 		if (readCallbacks.nonEmpty) {
-			readCallbacks top node
+			readCallbacks.top(node)
 		}
 	}
 
@@ -142,8 +142,8 @@ final class Engine extends Logging {
 
 	// BETTER use something like scutil.SourceLocation
 	def clientCall:Option[StackTraceElement] =
-		Thread.currentThread.getStackTrace find { it => clientClass(it.getClassName) }
+		Thread.currentThread.getStackTrace.find { it => clientClass(it.getClassName) }
 
 	private def clientClass(name:String):Boolean	=
-		!(ignoredPrefixes exists { name startsWith _ })
+		!ignoredPrefixes.exists(name.startsWith)
 }

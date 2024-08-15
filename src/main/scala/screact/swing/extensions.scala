@@ -16,12 +16,12 @@ extension[T](delegate:Cell[T]) {
 	def currentInEdt:T			= readInEdt { decouple { delegate.current } }
 
 	/** ensure set is called inside the EDT */
-	def setInEdt(value:T):Unit	= writeInEdt { delegate set value }
+	def setInEdt(value:T):Unit	= writeInEdt { delegate.set(value) }
 }
 
 extension[T](delegate:Emitter[T]) {
 	/** ensure emit is called inside the EDT */
-	def emitInEdt(value:T):Unit	= writeInEdt { delegate emit value }
+	def emitInEdt(value:T):Unit	= writeInEdt { delegate.emit(value) }
 }
 
 private def readInEdt[T](block: =>T):T	=

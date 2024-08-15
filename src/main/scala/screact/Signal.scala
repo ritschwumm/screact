@@ -13,7 +13,7 @@ trait Signal[+T] extends Reactive[T,T] {
 	final def previous:Events[T]	= {
 		// modify state only after evaluation of source nodes
 		var	previous	= current
-		edge map { next =>
+		edge.map { next =>
 			val	out		= previous
 			previous	= next
 			out
@@ -24,7 +24,7 @@ trait Signal[+T] extends Reactive[T,T] {
 	final def slide[U](func:(T,T)=>U):Events[U] = {
 		// modify state only after evaluation of source nodes
 		var	previous	= current
-		edge map { next =>
+		edge.map { next =>
 			val	out		= func(previous, next)
 			previous	= next
 			out
@@ -52,7 +52,7 @@ trait Signal[+T] extends Reactive[T,T] {
 		signal { func(current).current }
 
 	final def flatten[U](using ev:T <:< Signal[U]):Signal[U]	=
-		this flatMap ev
+		this.flatMap(ev)
 
 	// monad to Events
 
@@ -60,22 +60,22 @@ trait Signal[+T] extends Reactive[T,T] {
 		events { func(current).message }
 
 	final def flattenEvents[U](using ev:T <:< Events[U]):Events[U]	=
-		this flatMapEvents ev
+		this.flatMapEvents(ev)
 
 	// monad to Cell
 
 	final def flatMapCell[U](func:T=>Cell[U]):Cell[U]	= new Cell[U] {
 		val signal	= screact.signal { func(current).current }
-		def set(it:U):Unit	= { func(current) set it }
+		def set(it:U):Unit	= { func(current).set(it) }
 	}
 
 	final def flattenCell[U](using ev:T <:< Cell[U]):Cell[U]	=
-		this flatMapCell ev
+		this.flatMapCell(ev)
 
 	// delayable
 
 	final def delay[U>:T](initial:U)(using observing:Observing):Signal[U]	=
-		edge.delay hold initial
+		edge.delay.hold(initial)
 
 	// other
 
@@ -86,7 +86,7 @@ trait Signal[+T] extends Reactive[T,T] {
 		signal { func(this.current, that.current) }
 
 	final def fproduct[U](func:T=>U):Signal[(T,U)]	=
-		this map { it => (it,func(it)) }
+		this.map { it => (it,func(it)) }
 
 	final def untuple[U,V](using ev:T <:< (U,V)):(Signal[U],Signal[V])	=
 		(map(_._1), map(_._2))

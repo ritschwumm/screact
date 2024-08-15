@@ -64,7 +64,7 @@ trait Reactive[+Cur,+Msg] extends Node with AutoCloseable with Logging {
 			if (checkRank && rankVar > oldRank) {
 				throw RankMismatch
 			}
-			source.sinks add this
+			source.sinks.add(this)
 			sources += source
 		}
 
@@ -95,14 +95,14 @@ trait Reactive[+Cur,+Msg] extends Node with AutoCloseable with Logging {
 	/** called by deps between update and reset */
 	final def current:Cur = {
 		if (engine != Engine.access)	throw WrongThreadException
-		engine notifyReader this
+		engine.notifyReader(this)
 		cur
 	}
 
 	/** called by deps between update and reset */
 	final def message:Option[Msg] = {
 		if (engine != Engine.access)	throw WrongThreadException
-		engine notifyReader this
+		engine.notifyReader(this)
 		msg
 	}
 
@@ -124,11 +124,11 @@ trait Reactive[+Cur,+Msg] extends Node with AutoCloseable with Logging {
 	}
 
 	private def pushDownDependents():Unit	= {
-		sinks.all foreach { _ pushDown rankVar+1 }
+		sinks.all.foreach { _.pushDown(rankVar+1) }
 	}
 
 	private def removeSelfFromSources():Unit	= {
-		sources foreach { _.sinks remove this }
+		sources.foreach { _.sinks.remove(this) }
 		sources.clear()
 	}
 

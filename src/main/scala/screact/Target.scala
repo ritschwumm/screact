@@ -25,8 +25,8 @@ private final class Target[T](effect:Effect[T], source:Reactive[?,T]) extends No
 	def reset():Unit	= {}
 
 	def close():Unit	= {
-		source.sinks remove this
+		source.sinks.remove(this)
 	}
 
-	source.sinks add this
+	source.sinks.add(this)
 }

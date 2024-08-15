@@ -7,7 +7,7 @@ object Putter {
 		on(value, sum(putters))
 
 	def on[T](value:Signal[T], puts:Events[T=>T]):Events[T]	=
-		(puts snapshotWith value) { _(_) }
+		puts.snapshotWith(value) { _(_) }
 
 	//------------------------------------------------------------------------------
 
@@ -28,5 +28,5 @@ object Putter {
 		}
 
 	def sum[T](in:Iterable[Events[T=>T]]):Events[T=>T]	=
-		(in foldLeft zero[T])(append)
+		in.foldLeft(zero[T])(append)
 }

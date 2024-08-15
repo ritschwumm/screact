@@ -1,8 +1,10 @@
 package screact
 
+import scala.compiletime.uninitialized
+
 /** Signal depending on other Signals */
 private final class CalculationSignal[T](next: =>T) extends Signal[T] {
-	var	cur:T			= _
+	var	cur:T			= uninitialized
 	var msg:Option[T]	= None
 
 	def calculate():Unit	= {

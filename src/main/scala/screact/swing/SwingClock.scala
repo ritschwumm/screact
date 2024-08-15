@@ -41,7 +41,7 @@ object SwingClock {
 					val output	= outputRef.get
 					val alive	= (output ne null) && !output.disposed
 					if (alive) {
-						output emit MilliInstant.now()
+						output.emit(MilliInstant.now())
 					}
 					alive
 				}()
@@ -52,6 +52,6 @@ object SwingClock {
 	}
 
 	def repeat[T](cycle:MilliDuration, delay:MilliDuration, input:Events[Option[T]]):Events[T] =
-		input.flattenOption orElse
-		(input flatMap { _.cata(never, SwingClock(cycle, delay) tag _) })
+		input.flattenOption `orElse`
+		input.flatMap { _.cata(never, SwingClock(cycle, delay).tag(_)) }
 }

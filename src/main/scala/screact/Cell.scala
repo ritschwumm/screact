@@ -20,14 +20,14 @@ trait Cell[T] extends AutoCloseable { outer =>
 	}
 
 	final def xmap[S](bijection:Bijection[S,T]):Cell[S]	= new Cell[S] {
-		val signal	= outer.signal map bijection.set
-		def set(it:S):Unit	= { outer set (bijection get it) }
+		val signal	= outer.signal.map(bijection.set)
+		def set(it:S):Unit	= { outer.set(bijection.get(it)) }
 		override def close():Unit	=	{ signal.close() }
 	}
 
 	final def view[U](lens:Lens[T,U]):Cell[U]	= new Cell[U] {
-		val signal		= outer.signal map lens.get
-		def set(it:U):Unit	= 	{ outer modify (lens set it) }
+		val signal		= outer.signal.map(lens.get)
+		def set(it:U):Unit	=	{ outer.modify(lens.set(it)) }
 		override def close():Unit	=	{ signal.close() }
 	}
 

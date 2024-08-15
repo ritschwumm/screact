@@ -9,7 +9,9 @@ private final class SourceEvents[T] extends Events[T] with Logging { outer =>
 
 	/** schedules as an external event */
 	def emit(value:T):Unit	= {
-		engine schedule thunk { emitImpl(value) }
+		engine.schedule(
+			thunk { emitImpl(value) }
+		)
 	}
 
 	private def emitImpl(value:T):Option[Node]	=

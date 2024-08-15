@@ -18,5 +18,5 @@ private[screact] trait Node {
 	/** called on all updated nodes at the end of an update cycle */
 	private[screact] def reset():Unit
 
-	private[screact] val id:Long	= engine registerNode this
+	private[screact] val id:Long	= engine.registerNode(this)
 }

@@ -12,10 +12,10 @@ object Partial {
 			def container:Signal[S]	= master
 
 			val get:Signal[T]	=
-				master map select.get
+				master.map(select.get)
 
 			def putter(detail:Events[T]):Events[S=>S]	=
-				detail map select.set
+				detail.map(select.set)
 		}
 
 	/**
@@ -35,7 +35,7 @@ object Partial {
 				}
 
 			def putter(detail:Events[T]):Events[S=>S]	=
-				detail snapshot select collect {
+				detail.snapshot(select).collect {
 					case (detail, Some(view)) => view set detail
 				}
 		}
@@ -48,11 +48,11 @@ object Partial {
 			def container:Signal[S]	= master
 
 			val get:Signal[T]	=
-				master map { it => select get it getOrElse default }
+				master.map { it => select get it getOrElse default }
 
 			// NOTE this emits events that don't change anything
 			def putter(detail:Events[T]):Events[Endo[S]]	=
-				detail map { dv => (select putter dv).toEndo }
+				detail.map { dv => (select putter dv).toEndo }
 		}
 	*/
 }

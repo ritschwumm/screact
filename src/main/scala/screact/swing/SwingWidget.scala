@@ -21,7 +21,7 @@ object SwingWidget {
 
 	/** Signal values by some getter, changing on events from some Connectable */
 	def signal[T,X](connect:Effect[X]=>Disposer, getter:Thunk[T]):Signal[T]	=
-		events(connect) tag getter() hold getter()
+		events(connect).tag(getter()).hold(getter())
 
 	/**
 	wraps a swing component to take an input Signal and mit change Events.
@@ -35,8 +35,8 @@ object SwingWidget {
 		val blocker	= new Blocker
 		val events	= new WidgetEvents[T]
 
-		input observeNow { it =>
-			blocker exclusive {
+		input.observeNow { it =>
+			blocker.exclusive {
 				if (getter() != it) {
 					setter(it)
 				}
@@ -45,8 +45,8 @@ object SwingWidget {
 
 		// BETTER call this at some time
 		val disposer	= connect { _ =>
-			blocker attempt {
-				events emit getter()
+			blocker.attempt {
+				events.emit(getter())
 			}
 		}
 		val _ = disposer
@@ -68,11 +68,13 @@ object SwingWidget {
 			if (first) {
 				// TODO use the (Swing-)Domain to schedule
 				edt {
-					engine schedule thunk {
-						msg		= delayed
-						delayed	= None
-						Some(outer)
-					}
+					engine.schedule(
+						thunk {
+							msg		= delayed
+							delayed	= None
+							Some(outer)
+						}
+					)
 				}
 			}
 		}
