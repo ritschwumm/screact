@@ -4,9 +4,9 @@ ThisBuild / versionScheme := Some("early-semver")
 
 name			:= "screact"
 organization	:= "de.djini"
-version			:= "0.280.0"
+version			:= "0.281.0"
 
-scalaVersion	:= "3.8.0"
+scalaVersion	:= "3.8.3"
 scalacOptions	++= Seq(
 	"-preview",
 	"-feature",
@@ -23,8 +23,8 @@ scalacOptions	++= Seq(
 )
 
 libraryDependencies	++= Seq(
-	"de.djini"	%% "scutil-jdk"	% "0.267.0"	% "compile",
-	"de.djini"	%% "scutil-gui"	% "0.267.0"	% "compile"
+	"de.djini"	%% "scutil-jdk"	% "0.268.0"	% "compile",
+	"de.djini"	%% "scutil-gui"	% "0.268.0"	% "compile"
 )
 
 wartremoverErrors ++= Seq(
