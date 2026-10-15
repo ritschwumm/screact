@@ -4,9 +4,9 @@ ThisBuild / versionScheme := Some("early-semver")
 
 name			:= "screact"
 organization	:= "de.djini"
-version			:= "0.270.0"
+version			:= "0.271.0"
 
-scalaVersion	:= "3.6.3"
+scalaVersion	:= "3.7.1"
 scalacOptions	++= Seq(
 	"-feature",
 	"-deprecation",
@@ -20,8 +20,8 @@ scalacOptions	++= Seq(
 )
 
 libraryDependencies	++= Seq(
-	"de.djini"	%% "scutil-jdk"	% "0.257.0"	% "compile",
-	"de.djini"	%% "scutil-gui"	% "0.257.0"	% "compile"
+	"de.djini"	%% "scutil-jdk"	% "0.258.0"	% "compile",
+	"de.djini"	%% "scutil-gui"	% "0.258.0"	% "compile"
 )
 
 wartremoverErrors ++= Seq(
@@ -34,19 +34,15 @@ wartremoverErrors ++= Seq(
 	Wart.TryPartial,
 	Wart.Enumeration,
 	Wart.FinalCaseClass,
-	Wart.JavaConversions,
 	Wart.Option2Iterable,
-	Wart.JavaSerializable,
 	//Wart.Any,
 	Wart.AnyVal,
 	//Wart.Nothing,
 	Wart.ArrayEquals,
 	//Wart.ImplicitParameter,
-	Wart.ExplicitImplicitTypes,
 	Wart.LeakingSealed,
 	Wart.DefaultArguments,
 	// TODO should be enabled, but produces unfixable errors in signal/cell/emitter extensions
 	//Wart.Overloading,
-	//Wart.PublicInference,
-	//Wart.TraversableOps
+	//Wart.IterableOps
 )
