@@ -2,14 +2,6 @@ package screact
 
 import scutil.lang.*
 
-/*
-import scala.language.implicitConversions
-
-object Cell {
-	implicit def asSignal[T](it:Cell[T]):Signal[T]	= it.signal
-}
-*/
-
 /** An Cell is a source for a Signal and can trigger an update cycle in the Engine */
 trait Cell[T] extends AutoCloseable { outer =>
 	val signal:Signal[T]
