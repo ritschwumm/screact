@@ -1,5 +1,7 @@
 package screact
 
+import scala.annotation.nowarn
+
 /** base trait for all nodes in a dependency graph. direct children are either Reactive or Target. */
 private[screact] trait Node {
 	val engine	= Engine.access
@@ -18,5 +20,6 @@ private[screact] trait Node {
 	/** called on all updated nodes at the end of an update cycle */
 	private[screact] def reset():Unit
 
-	private[screact] val id:Long	= engine.registerNode(this)
+	// NOTE this is dangerous, the engine must never use the node before this constructor is finished!
+	private[screact] val id:Long	= engine.registerNode(this) : @nowarn
 }
