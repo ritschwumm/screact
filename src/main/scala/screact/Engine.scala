@@ -12,7 +12,7 @@ object Engine {
 
 	def access:Engine	= {
 		val	oldEngine	= threadLocal.get
-		if (oldEngine ne null)	return oldEngine
+		if oldEngine ne null	then return oldEngine
 
 		val newEngine	= new Engine
 		threadLocal.set(newEngine)
@@ -47,7 +47,7 @@ final class Engine extends Logging {
 
 	// delayed and new external events are immediately re-scheduled
 	private def scheduleLoop():Unit	= {
-		while (!updating && external.nonEmpty) {
+		while !updating && external.nonEmpty do {
 			scheduleInternal()
 		}
 	}
@@ -77,9 +77,9 @@ final class Engine extends Logging {
 		val done	= mutable.Set.empty[Node]
 		val	queue	= new NodeQueue
 		queue.insertMany(start)
-		while (queue.nonEmpty) {
+		while queue.nonEmpty do {
 			val	head	= queue.extract().getOrError("oops, empty queue")
-			if (!(done contains head)) {
+			if !(done contains head) then {
 				head.update() match {
 					case Update.Changed	=>
 						// value has changed, unschedule the head node and schedule the head node's dependencies
@@ -101,7 +101,7 @@ final class Engine extends Logging {
 		done.clear()
 
 		// NOTE ugly hack to get rid of WeakReferences
-		if (doneSize > 10) {
+		if doneSize > 10 then {
 			sinksCache.gc()
 		}
 	}
@@ -123,7 +123,7 @@ final class Engine extends Logging {
 	}
 
 	private[screact] def notifyReader(node:Node):Unit	= {
-		if (readCallbacks.nonEmpty) {
+		if readCallbacks.nonEmpty then {
 			readCallbacks.top(node)
 		}
 	}

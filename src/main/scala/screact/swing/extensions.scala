@@ -25,9 +25,11 @@ extension[T](delegate:Emitter[T]) {
 }
 
 private def readInEdt[T](block: =>T):T	=
-	if (insideEdt)	block
-	else			edt{ block }()
+	if insideEdt
+	then block
+	else edt{ block }()
 
 private def writeInEdt[T](block: =>Unit):Unit	=
-	if (insideEdt)	block
-	else			edt { block }
+	if insideEdt
+	then block
+	else edt { block }

@@ -16,7 +16,7 @@ private final class SourceSignal[T](initial:T) extends Signal[T] with Logging { 
 	}
 
 	private def setImpl(value:T):Option[Node]	=
-		if (value != cur) {
+		if value != cur then {
 			msg match {
 				case None	=>
 					cur	= value

@@ -244,7 +244,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 		var	todo	= count
 		events {
 			// when we're done, loosing the connection is actually a good thing
-			if (todo != 0) {
+			if todo != 0 then {
 				val out	= message
 				todo	-= 1
 				out
@@ -263,7 +263,7 @@ trait Events[+T] extends Reactive[Unit,T] {
 			// need to access message every time to avoid loss of connection
 			val	value	= message
 			val _		= value
-			if (todo != 0) {
+			if todo != 0 then {
 				todo	-= 1
 				None
 			}

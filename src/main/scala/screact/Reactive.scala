@@ -25,13 +25,13 @@ trait Reactive[+Cur,+Msg] extends Node with AutoCloseable with Logging {
 	private[screact] val sinks	= engine.newHasSinks()
 
 	private[screact] final def update():Update = {
-		if (disposedFlag)	return Update.Unchanged
+		if disposedFlag	then return Update.Unchanged
 
 		val	ok	= updateInternal(true)
-		if (!ok)			return Update.Rerank
+		if !ok			then return Update.Rerank
 
 		val	notify	= msg.isDefined
-		if (!notify)		return Update.Unchanged
+		if !notify		then return Update.Unchanged
 
 		Update.Changed
 	}
@@ -47,7 +47,7 @@ trait Reactive[+Cur,+Msg] extends Node with AutoCloseable with Logging {
 
 		// just to keep sources alive during this update cycle
 		val oldSources	= sources
-		val _ 			= oldSources
+		val _			= oldSources
 		// NOTE i'm already in the queue, so even if i get reranked this will not affect whether i'm scheduled or not
 		removeSelfFromSources()
 
@@ -58,10 +58,10 @@ trait Reactive[+Cur,+Msg] extends Node with AutoCloseable with Logging {
 		*/
 		def readCallback(source:Node):Unit	= {
 			val	sourceRank	= source.rank
-			if (sourceRank >= rankVar) {
+			if sourceRank >= rankVar then {
 				rankVar	= sourceRank + 1
 			}
-			if (checkRank && rankVar > oldRank) {
+			if checkRank && rankVar > oldRank then {
 				throw RankMismatch
 			}
 			source.sinks.add(this)
@@ -94,14 +94,14 @@ trait Reactive[+Cur,+Msg] extends Node with AutoCloseable with Logging {
 
 	/** called by deps between update and reset */
 	final def current:Cur = {
-		if (engine != Engine.access)	throw WrongThreadException
+		if engine != Engine.access	then throw WrongThreadException
 		engine.notifyReader(this)
 		cur
 	}
 
 	/** called by deps between update and reset */
 	final def message:Option[Msg] = {
-		if (engine != Engine.access)	throw WrongThreadException
+		if engine != Engine.access	then throw WrongThreadException
 		engine.notifyReader(this)
 		msg
 	}
@@ -109,7 +109,7 @@ trait Reactive[+Cur,+Msg] extends Node with AutoCloseable with Logging {
 	final def disposed:Boolean	= disposedFlag
 
 	final def close():Unit	= {
-		if (engine != Engine.access)	throw WrongThreadException
+		if engine != Engine.access	then throw WrongThreadException
 		disposedFlag	= true
 		sources.clear()
 		sinks.clear()
@@ -117,7 +117,7 @@ trait Reactive[+Cur,+Msg] extends Node with AutoCloseable with Logging {
 
 	/** recursively increase the rank of all dependent nodes */
 	private [screact] def pushDown(newRank:Int):Unit	= {
-		if (newRank > rank) {
+		if newRank > rank then {
 			rankVar	= newRank
 			pushDownDependents()
 		}

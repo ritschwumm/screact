@@ -18,7 +18,7 @@ private final class NodeQueue {
 		var	out:Option[Node]	= None
 		var rank				= Integer.MAX_VALUE
 		items foreach { item =>
-			if (item.rank < rank || out.isEmpty) {
+			if item.rank < rank || out.isEmpty then {
 				out		= Some(item)
 				rank	= item.rank
 			}

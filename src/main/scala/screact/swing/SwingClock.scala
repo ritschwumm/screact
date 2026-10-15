@@ -40,12 +40,12 @@ object SwingClock {
 				edt {
 					val output	= outputRef.get
 					val alive	= (output ne null) && !output.disposed
-					if (alive) {
+					if alive then {
 						output.emit(MilliInstant.now())
 					}
 					alive
 				}()
-			if (!alive) {
+			if !alive then {
 				cancel()
 			}
 		}

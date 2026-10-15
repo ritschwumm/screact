@@ -11,7 +11,7 @@ private final class SinksCache {
 	private var	nextId	= 0L
 
 	def register(node:Node):Long = {
-		while (nodes contains nextId) { nextId += 1 }
+		while nodes.contains(nextId) do { nextId += 1 }
 		nodes	+= (nextId -> new WeakReference[Node](node))
 		nextId
 	}

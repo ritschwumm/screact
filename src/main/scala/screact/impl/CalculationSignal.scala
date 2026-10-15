@@ -10,7 +10,7 @@ private final class CalculationSignal[T](next: =>T) extends Signal[T] {
 	def calculate():Unit	= {
 		val	old	= cur
 		cur	= next
-		if (cur == old)	return
+		if cur == old	then return
 		msg	= Some(cur)
 	}
 

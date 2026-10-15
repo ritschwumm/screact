@@ -37,7 +37,7 @@ object SwingWidget {
 
 		input.observeNow { it =>
 			blocker.exclusive {
-				if (getter() != it) {
+				if getter() != it then {
 					setter(it)
 				}
 			}
@@ -65,7 +65,7 @@ object SwingWidget {
 		def emit(value:T):Unit	= {
 			val	first	= delayed.isEmpty
 			delayed		= Some(value)
-			if (first) {
+			if first then {
 				// TODO use the (Swing-)Domain to schedule
 				edt {
 					engine.schedule(

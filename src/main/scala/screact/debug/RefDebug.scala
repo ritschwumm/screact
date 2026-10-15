@@ -23,7 +23,7 @@ class RefDebugger(what:String) {
 	}
 
 	private def work():Unit	= {
-		while (true) {
+		while true do {
 			val	ref	= queue.remove()
 			refs	= refs filterNot { _ == ref }
 			println(what + "\t-\t" + refs.size.toString)

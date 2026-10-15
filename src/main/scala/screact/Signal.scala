@@ -92,7 +92,7 @@ trait Signal[+T] extends Reactive[T,T] {
 		(map(_._1), map(_._2))
 
 	final def choose[U](sourceTrue:Signal[U], sourceFalse:Signal[U])(using ev:T <:< Boolean):Signal[U]	=
-		signal { if (current) sourceTrue.current else sourceFalse.current }
+		signal { if current then sourceTrue.current else sourceFalse.current }
 
 	//------------------------------------------------------------------------------
 	//## Observing forwarder
